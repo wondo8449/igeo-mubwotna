@@ -1,6 +1,11 @@
 package com.sparta.igeomubwotna.repository;
 
+import com.sparta.igeomubwotna.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface UserRepository extends JpaRepository {
+import java.util.Optional;
+
+public interface UserRepository extends JpaRepository<User, Long> {
+    Optional<User> findByUserId(String userId);
+    Optional<User> findByEmail(String email);
 }
