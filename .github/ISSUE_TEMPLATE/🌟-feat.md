@@ -1,7 +1,7 @@
 ---
 name: "\U0001F31F Feat"
 about: 프로젝트에 추가할 기능에 대하여 작성해주세요.
-title: ''
+title: "[Feat]"
 labels: ''
 assignees: ''
 

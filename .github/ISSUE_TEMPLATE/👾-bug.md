@@ -1,7 +1,7 @@
 ---
 name: "\U0001F47E Bug"
 about: 수정이 필요한 버그/에러에 대하여 작성해주세요.
-title: ''
+title: "[Bug]"
 labels: ''
 assignees: LeeChangHyeong
 
