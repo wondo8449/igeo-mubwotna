@@ -34,4 +34,12 @@ public class Comment extends Timestamped{
     @Column(nullable = false)
     private Long likeCount;
 
+    /* Constructor */
+//    public Comment(CommentResponseDto requestDto, Recipe recipe) {
+//        this.content = requestDto.getContent();
+//        this.userId = requestDto.getUserId();
+//        this.likeCount = requestDto.getLikeCount();
+//    }
+
+
 }
