@@ -51,8 +51,8 @@ public class User extends Timestamped{
 	private LocalDateTime statusModifiedAt;
 
 
-	// @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
-	// private List<Recipe> recipes = new ArrayList<>();
+	@OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+	private List<Recipe> recipes = new ArrayList<>();
 	//
 	// @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
 	// private List<Comment> comments = new ArrayList<>();

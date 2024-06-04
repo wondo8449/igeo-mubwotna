@@ -19,15 +19,19 @@ import lombok.Setter;
 @Table(name = "recipe")
 @NoArgsConstructor
 public class Recipe extends Timestamped{
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	// @ManyToOne(fetch = FetchType.LAZY)
-	// @JoinColumn(name = "user_id", nullable = false)
-	// private User user;
-	@Column
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "userId", nullable = false)
+	private User user;
+
+	@Column(nullable = false)
 	private String title;
-	@Column
+
+	@Column(nullable = false)
 	private String content;
 
 }
