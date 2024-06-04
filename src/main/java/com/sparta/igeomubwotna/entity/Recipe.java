@@ -1,4 +1,4 @@
 package com.sparta.igeomubwotna.entity;
 
-public class Recipe {
+public class Recipe extends Timestamped{
 }

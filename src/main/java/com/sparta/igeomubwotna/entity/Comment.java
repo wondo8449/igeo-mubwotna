@@ -1,4 +1,4 @@
 package com.sparta.igeomubwotna.entity;
 
-public class Comment {
+public class Comment extends Timestamped{
 }

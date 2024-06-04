@@ -1,4 +1,4 @@
 package com.sparta.igeomubwotna.entity;
 
-public class User {
+public class User extends Timestamped{
 }

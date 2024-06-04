@@ -1,4 +1,4 @@
 package com.sparta.igeomubwotna.entity;
 
-public class Like {
+public class Like extends Timestamped{
 }
