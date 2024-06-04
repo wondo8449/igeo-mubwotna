@@ -1,5 +1,6 @@
 package com.sparta.igeomubwotna.entity;
 
+import com.sparta.igeomubwotna.dto.CommentResponseDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,5 +34,13 @@ public class Comment extends Timestamped{
     //좋아요 수
     @Column(nullable = false)
     private Long likeCount;
+
+    /* Constructor */
+    public Comment(CommentResponseDto requestDto, Recipe recipe) {
+        this.content = requestDto.getContent();
+        this.userId = requestDto.getUserId();
+        this.likeCount = requestDto.getLikeCount();
+    }
+
 
 }
