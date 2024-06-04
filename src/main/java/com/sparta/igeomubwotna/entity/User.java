@@ -41,9 +41,9 @@ public class User extends Timestamped{
 	@Column(nullable = false)
 	private String description;
 
-	// @Column(nullable = false)
-	// @Enumerated(value = EnumType.STRING)
-	// private UserStatusEnum status;
+	@Column(nullable = false)
+	@Enumerated(value = EnumType.STRING)
+	private UserStatusEnum status;
 
 	@LastModifiedDate
 	@Column
