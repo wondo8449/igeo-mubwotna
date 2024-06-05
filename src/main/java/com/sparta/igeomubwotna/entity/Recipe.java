@@ -1,5 +1,7 @@
 package com.sparta.igeomubwotna.entity;
 
+import com.sparta.igeomubwotna.dto.RecipeRequestDto;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -34,4 +36,9 @@ public class Recipe extends Timestamped{
 	@Column(nullable = false)
 	private String content;
 
+	public Recipe(RecipeRequestDto requestDto, User user) {
+		this.title = requestDto.getTitle();
+		this.content = requestDto.getContent();
+		this.user = user;
+	}
 }
