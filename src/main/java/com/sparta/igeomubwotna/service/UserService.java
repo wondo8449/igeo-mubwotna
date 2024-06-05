@@ -4,6 +4,7 @@ import com.sparta.igeomubwotna.dto.Response;
 import com.sparta.igeomubwotna.dto.SigninRequestDto;
 import com.sparta.igeomubwotna.dto.SignupRequestDto;
 import com.sparta.igeomubwotna.dto.UserProfileDto;
+import com.sparta.igeomubwotna.dto.UserUpdateRequestDto;
 import com.sparta.igeomubwotna.entity.User;
 import com.sparta.igeomubwotna.jwt.JwtUtil;
 import com.sparta.igeomubwotna.repository.UserRepository;
@@ -136,5 +137,37 @@ public class UserService {
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 사용자의 프로필을 찾을 수 없습니다."));
         return new UserProfileDto(user);
+    }
+
+    @Transactional
+    public ResponseEntity<Response> updateUserProfile(UserUpdateRequestDto requestDto, Long userId) {
+        // ID로 사용자를 검색하고, 없으면 예외를 던짐
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 사용자의 프로필을 찾을 수 없습니다."));
+
+        if (requestDto.getName() != null) {
+            user.setName(requestDto.getName());
+        }
+        if (requestDto.getDescription() != null) {
+            user.setDescription(requestDto.getDescription());
+        }
+        if (requestDto.getNewPassword() != null) {
+            // 입력한 현재 비밀번호가 올바른지 확인
+            if (!passwordEncoder.matches(requestDto.getCurrentPassword(), user.getPassword())) {
+                Response response = new Response(HttpStatus.BAD_REQUEST.value(), "입력한 현재 비밀번호가 일치하지 않습니다.");
+                return ResponseEntity.badRequest().body(response);
+            }
+            // 새로운 비밀번호가 현재 비밀번호와 같은지 확인
+            if (passwordEncoder.matches(requestDto.getNewPassword(), user.getPassword())) {
+                Response response = new Response(HttpStatus.BAD_REQUEST.value(), "새로운 비밀번호는 현재 비밀번호와 달라야 합니다.");
+                return ResponseEntity.badRequest().body(response);
+            }
+            // 새로운 비밀번호 설정
+            user.setPassword(passwordEncoder.encode(requestDto.getNewPassword()));
+        }
+        userRepository.save(user);  // 사용자 정보 저장
+
+        Response response = new Response(HttpStatus.OK.value(), "프로필 정보를 성공적으로 수정하였습니다.");
+        return ResponseEntity.ok().body(response);
     }
 }

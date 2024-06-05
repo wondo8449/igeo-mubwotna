@@ -57,4 +57,16 @@ public class User extends Timestamped {
         this.description = description;
         this.status = UserStatusEnum.ACTIVE;
     }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 }
