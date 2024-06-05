@@ -25,11 +25,15 @@ public class LikeService {
         Recipe foundRecipe = recipeRepository.findById(recipeId).orElseThrow(
                 () -> new IllegalArgumentException("해당 레시피는 존재하지 않습니다."));
 
-        if (foundUser.getUserId() == foundRecipe.getUser().getUserId()) {
-            new IllegalArgumentException("자신이 작성한 레시피에는 좋아요를 남길 수 없습니다.");
-        }
+//        if (foundUser.getUserId() == foundRecipe.getUser().getUserId()) {
+//            new IllegalArgumentException("자신이 작성한 레시피에는 좋아요를 남길 수 없습니다.");
+//        }
 
         var RecipeLikes = new RecipeLikes(foundUser, foundRecipe);
+
+        if(recipeLikesRepository.findByUserAndRecipe(foundUser, foundRecipe).isPresent()) {
+            new IllegalArgumentException("이미 좋아요를 누른 레시피입니다.");
+        }
 
         recipeLikesRepository.save(RecipeLikes);
 
@@ -55,8 +59,12 @@ public class LikeService {
         Comment foundComment = commentRepository.findById(commentId).orElseThrow(
                 () -> new IllegalArgumentException("해당 댓글은 존재하지 않습니다."));
 
-        if (foundUser.getUserId() == foundComment.getUser().getUserId()) {
-            new IllegalArgumentException("자신이 작성한 댓글에는 좋아요를 남길 수 없습니다.");
+//        if (foundUser.getUserId() == foundComment.getUser().getUserId()) {
+//            new IllegalArgumentException("자신이 작성한 댓글에는 좋아요를 남길 수 없습니다.");
+//        }
+
+        if(commentLikesRepository.findByUserAndRecipe(foundUser, foundComment).isPresent()) {
+            new IllegalArgumentException("이미 좋아요를 누른 댓글입니다.");
         }
 
         var CommentLikes = new CommentLikes(foundUser, foundComment);
