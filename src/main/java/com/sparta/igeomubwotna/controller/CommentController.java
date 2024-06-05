@@ -1,5 +1,6 @@
 package com.sparta.igeomubwotna.controller;
 
+import com.sparta.igeomubwotna.dto.CommentRequestDto;
 import com.sparta.igeomubwotna.dto.CommentResponseDto;
 import com.sparta.igeomubwotna.service.CommentService;
 import lombok.RequiredArgsConstructor;
@@ -14,8 +15,10 @@ public class CommentController {
 
     /* Create */
     @PostMapping
-    public CommentResponseDto createComment (@RequestBody CommentResponseDto requestDto, @PathVariable Long recipeId) {
-        return commentService.createComment(requestDto, recipeId);
+    public CommentResponseDto createComment (@RequestBody CommentRequestDto requestDto,
+                                             @PathVariable Long recipeId,
+                                             @PathVariable Long userId) {
+        return commentService.createComment(requestDto, recipeId, userId);
     }
 
 }

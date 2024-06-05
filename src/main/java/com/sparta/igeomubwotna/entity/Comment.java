@@ -1,5 +1,7 @@
 package com.sparta.igeomubwotna.entity;
 
+import com.sparta.igeomubwotna.dto.CommentRequestDto;
+import com.sparta.igeomubwotna.dto.CommentResponseDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,14 +20,6 @@ public class Comment extends Timestamped{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    //레시피 ID
-    @Column(nullable = false)
-    private Long recipeId;
-
-    //작성자 ID
-    @Column(nullable = false)
-    private Long userId;
-
     //내용
     @Column(nullable = false)
     private String content;
@@ -34,12 +28,24 @@ public class Comment extends Timestamped{
     @Column(nullable = false)
     private Long likeCount;
 
+    /* Mapping */
+    //작성자 ID
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    //레시피 ID
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "recipe_id")
+    private Recipe recipe;
+
     /* Constructor */
-//    public Comment(CommentResponseDto requestDto, Recipe recipe) {
-//        this.content = requestDto.getContent();
-//        this.userId = requestDto.getUserId();
-//        this.likeCount = requestDto.getLikeCount();
-//    }
+    public Comment(CommentRequestDto requestDto, Recipe recipe, User user) {
+        this.content = requestDto.getContent();
+        this.likeCount = requestDto.getLikeCount();
+        this.recipe = recipe;
+        this.user = user;
+    }
 
 
 }
