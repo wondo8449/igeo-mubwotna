@@ -28,4 +28,9 @@ public class LikeController {
     public ResponseEntity addCommentLike(@PathVariable Long commentId, User user) {
         return likeService.addCommentLike(commentId, user);
     }
+
+    @DeleteMapping("/comment/{commentId}")
+    public ResponseEntity removeCommentLike(@PathVariable Long commentId, User user) {
+        return likeService.removeCommentLike(commentId, user);
+    }
 }

@@ -57,4 +57,15 @@ public class LikeService {
 
         return ResponseEntity.status(200).body("좋아요 성공!");
     }
+
+    @Transactional
+    public ResponseEntity removeCommentLike(Long commentId, User user) {
+
+        CommentLikes foundLike = commentLikesRepository.findById(commentId).orElseThrow(
+                () -> new IllegalArgumentException("해당 좋아요가 존재하지 않습니다."));
+
+        commentLikesRepository.delete(foundLike);
+
+        return ResponseEntity.status(200).body("좋아요 취소 성공!");
+    }
 }
