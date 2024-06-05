@@ -49,4 +49,12 @@ public class UserService {
         Response response = new Response(HttpStatus.OK.value(), "회원가입에 성공하였습니다.");
         return ResponseEntity.ok(response);
     }
+
+
+    /* userId로 user 찾기 */
+    public User findUserById(Long userId) {
+        return userRepository.findById(userId).orElseThrow(() ->
+                new IllegalArgumentException("존재하지 않는 사용자입니다.")
+        );
+    }
 }
