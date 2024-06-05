@@ -25,10 +25,8 @@ public class UserController {
     }
 
     @PostMapping("/user/login")
-    public ResponseEntity<Response> signin(@RequestBody @Valid SigninRequestDto requestDto, HttpServletResponse response, BindingResult bindingResult) {
-        userService.signin(requestDto, response, bindingResult);
-
-        return null;
+    public ResponseEntity<Response> signin(@RequestBody @Valid SigninRequestDto requestDto, HttpServletResponse res, BindingResult bindingResult) {
+        return userService.signin(requestDto, res, bindingResult);
     }
 
 }
