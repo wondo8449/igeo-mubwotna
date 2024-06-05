@@ -52,6 +52,7 @@ public class UserController {
 
     @GetMapping("/user/me")
     public ResponseEntity<UserProfileDto> getCurrentUserProfile(Authentication authentication) {
+        // 인증 객체에서 사용자 정보를 추출
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         UserProfileDto userProfile = userService.getUserProfile(userDetails.getUser().getId());
         return ResponseEntity.ok(userProfile);

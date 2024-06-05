@@ -55,6 +55,7 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public UserProfileDto getUserProfile(Long userId) {
+        // ID로 사용자를 검색하고, 없으면 예외를 던짐
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 사용자의 프로필을 찾을 수 없습니다."));
         return new UserProfileDto(user);
