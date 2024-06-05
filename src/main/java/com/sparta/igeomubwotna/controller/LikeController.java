@@ -1,6 +1,6 @@
 package com.sparta.igeomubwotna.controller;
 
-import com.sparta.igeomubwotna.entity.User;
+import com.sparta.igeomubwotna.security.UserDetailsImpl;
 import com.sparta.igeomubwotna.service.LikeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -15,22 +15,22 @@ public class LikeController {
     private final LikeService likeService;
 
     @GetMapping("/recipe/{recipeId}")
-    public ResponseEntity addRecipeLike(@PathVariable Long recipeId, User user) {
-        return likeService.addRecipeLike(recipeId, user);
+    public ResponseEntity addRecipeLike(@PathVariable Long recipeId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return likeService.addRecipeLike(recipeId, userDetails.getUser());
     }
 
     @DeleteMapping("/recipe/{recipeLikeId}")
-    public ResponseEntity removeRecipeLike(@PathVariable Long recipeLikeId, User user) {
-        return likeService.removeRecipeLike(recipeLikeId, user);
+    public ResponseEntity removeRecipeLike(@PathVariable Long recipeLikeId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return likeService.removeRecipeLike(recipeLikeId, userDetails.getUser());
     }
 
     @GetMapping("/comment/{commentId}")
-    public ResponseEntity addCommentLike(@PathVariable Long commentId, User user) {
-        return likeService.addCommentLike(commentId, user);
+    public ResponseEntity addCommentLike(@PathVariable Long commentId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return likeService.addCommentLike(commentId, userDetails.getUser());
     }
 
     @DeleteMapping("/comment/{commentId}")
-    public ResponseEntity removeCommentLike(@PathVariable Long commentId, User user) {
-        return likeService.removeCommentLike(commentId, user);
+    public ResponseEntity removeCommentLike(@PathVariable Long commentId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return likeService.removeCommentLike(commentId, userDetails.getUser());
     }
 }
