@@ -3,6 +3,7 @@ package com.sparta.igeomubwotna.service;
 import com.sparta.igeomubwotna.dto.Response;
 import com.sparta.igeomubwotna.dto.SigninRequestDto;
 import com.sparta.igeomubwotna.dto.SignupRequestDto;
+import com.sparta.igeomubwotna.dto.UserProfileDto;
 import com.sparta.igeomubwotna.entity.User;
 import com.sparta.igeomubwotna.jwt.JwtUtil;
 import com.sparta.igeomubwotna.repository.UserRepository;
@@ -16,10 +17,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -124,5 +128,13 @@ public class UserService {
         }
 
         return null;
+    }
+  
+    @Transactional(readOnly = true)
+    public UserProfileDto getUserProfile(Long userId) {
+        // ID로 사용자를 검색하고, 없으면 예외를 던짐
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 사용자의 프로필을 찾을 수 없습니다."));
+        return new UserProfileDto(user);
     }
 }
