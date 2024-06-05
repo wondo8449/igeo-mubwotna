@@ -2,14 +2,18 @@ package com.sparta.igeomubwotna.controller;
 
 import com.sparta.igeomubwotna.dto.Response;
 import com.sparta.igeomubwotna.dto.SignupRequestDto;
+import com.sparta.igeomubwotna.dto.UserProfileDto;
+import com.sparta.igeomubwotna.security.UserDetailsImpl;
 import com.sparta.igeomubwotna.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -44,5 +48,13 @@ public class UserController {
 
         // UserService의 signup 메서드에 데이터 넘겨 줌
         return userService.signup(requestDto);
+    }
+
+    @GetMapping("/user/me")
+    public ResponseEntity<UserProfileDto> getCurrentUserProfile(Authentication authentication) {
+        // 인증 객체에서 사용자 정보를 추출
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        UserProfileDto userProfile = userService.getUserProfile(userDetails.getUser().getId());
+        return ResponseEntity.ok(userProfile);
     }
 }
