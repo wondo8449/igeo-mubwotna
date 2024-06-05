@@ -23,8 +23,7 @@ public class RecipeLikes extends Timestamped{
     private Recipe recipe;
 
     @Builder
-    public RecipeLikes(Long id, User user, Recipe recipe) {
-        this.id = id;
+    public RecipeLikes(User user, Recipe recipe) {
         this.user = user;
         this.recipe = recipe;
     }
