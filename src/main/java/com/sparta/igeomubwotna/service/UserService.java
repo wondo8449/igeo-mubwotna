@@ -4,7 +4,9 @@ import com.sparta.igeomubwotna.dto.Response;
 import com.sparta.igeomubwotna.dto.SigninRequestDto;
 import com.sparta.igeomubwotna.dto.SignupRequestDto;
 import com.sparta.igeomubwotna.entity.User;
+import com.sparta.igeomubwotna.jwt.JwtUtil;
 import com.sparta.igeomubwotna.repository.UserRepository;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +27,7 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
 
     public ResponseEntity<Response> signup(SignupRequestDto requestDto, BindingResult bindingResult) {
         ResponseEntity<Response> returnError = checkError("회원가입에 실패하였습니다.", bindingResult);
@@ -88,6 +91,9 @@ public class UserService {
             }
 
             // TODO: JWT 생성 및 쿠키에 저장 후 Response 객체에 추가
+            String token = jwtUtil.creatToken(userId); // 토큰 생성
+            jwtUtil.addJwtToCookie(token, res); // 쿠키 생성 후 토큰 쿠키에 저장
+
         } else {
             // 오류 메시지와 상태 코드 반환
             Response response = new Response(HttpStatus.BAD_REQUEST.value(), "아이디가 존재하지 않습니다.");
