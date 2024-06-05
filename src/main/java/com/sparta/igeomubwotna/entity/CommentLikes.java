@@ -23,8 +23,7 @@ public class CommentLikes extends Timestamped{
     private Comment comment;
 
     @Builder
-    public CommentLikes(Long id, User user, Comment comment) {
-        this.id = id;
+    public CommentLikes(User user, Comment comment) {
         this.user = user;
         this.comment = comment;
     }

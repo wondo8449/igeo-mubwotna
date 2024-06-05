@@ -1,12 +1,7 @@
 package com.sparta.igeomubwotna.service;
 
-import com.sparta.igeomubwotna.entity.Recipe;
-import com.sparta.igeomubwotna.entity.RecipeLikes;
-import com.sparta.igeomubwotna.entity.User;
-import com.sparta.igeomubwotna.repository.CommentLikesRepository;
-import com.sparta.igeomubwotna.repository.RecipeLikesRepository;
-import com.sparta.igeomubwotna.repository.RecipeRepository;
-import com.sparta.igeomubwotna.repository.UserRepository;
+import com.sparta.igeomubwotna.entity.*;
+import com.sparta.igeomubwotna.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -19,6 +14,7 @@ public class LikeService {
     private final RecipeLikesRepository recipeLikesRepository;
     private final CommentLikesRepository commentLikesRepository;
     private final RecipeRepository recipeRepository;
+    private final CommentRepository commentRepository;
     private final UserRepository userRepository;
 
     public ResponseEntity addRecipeLike(Long recipeId, User user) {
@@ -45,5 +41,20 @@ public class LikeService {
         recipeLikesRepository.delete(foundlike);
 
         return ResponseEntity.status(200).body("좋아요 취소 성공!");
+    }
+
+    public ResponseEntity addCommentLike(Long commentId, User user) {
+
+        User foundUser = userRepository.findByUserId(user.getUserId()).orElseThrow(
+                () -> new IllegalArgumentException("해당 유저는 존재하지 않습니다."));
+
+        Comment foundComment = commentRepository.findById(commentId).orElseThrow(
+                () -> new IllegalArgumentException("해당 댓글은 존재하지 않습니다."));
+
+        var CommentLikes = new CommentLikes(foundUser, foundComment);
+
+        commentLikesRepository.save(CommentLikes);
+
+        return ResponseEntity.status(200).body("좋아요 성공!");
     }
 }
