@@ -2,6 +2,7 @@ package com.sparta.igeomubwotna.service;
 
 import com.sparta.igeomubwotna.dto.Response;
 import com.sparta.igeomubwotna.dto.SignupRequestDto;
+import com.sparta.igeomubwotna.dto.UserProfileDto;
 import com.sparta.igeomubwotna.entity.User;
 import com.sparta.igeomubwotna.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
 
@@ -48,5 +51,12 @@ public class UserService {
         // 성공 메시지와 상태 코드 반환
         Response response = new Response(HttpStatus.OK.value(), "회원가입에 성공하였습니다.");
         return ResponseEntity.ok(response);
+    }
+
+    @Transactional(readOnly = true)
+    public UserProfileDto getUserProfile(Long userId) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 사용자의 프로필을 찾을 수 없습니다."));
+        return new UserProfileDto(user);
     }
 }
