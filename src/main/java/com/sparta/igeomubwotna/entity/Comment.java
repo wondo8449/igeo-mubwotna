@@ -1,6 +1,9 @@
 package com.sparta.igeomubwotna.entity;
 
+<<<<<<< HEAD
 import com.sparta.igeomubwotna.dto.CommentRequestDto;
+=======
+>>>>>>> 0d34ead6d506b8b6a87288ed912c44913111456d
 import com.sparta.igeomubwotna.dto.CommentResponseDto;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -28,6 +31,7 @@ public class Comment extends Timestamped{
     @Column(nullable = false)
     private Long likeCount;
 
+<<<<<<< HEAD
     /* Mapping */
     //작성자 ID
     @ManyToOne(fetch = FetchType.LAZY)
@@ -45,6 +49,13 @@ public class Comment extends Timestamped{
         this.likeCount = requestDto.getLikeCount();
         this.recipe = recipe;
         this.user = user;
+=======
+    /* Constructor */
+    public Comment(CommentResponseDto requestDto, Recipe recipe) {
+        this.content = requestDto.getContent();
+        this.userId = requestDto.getUserId();
+        this.likeCount = requestDto.getLikeCount();
+>>>>>>> 0d34ead6d506b8b6a87288ed912c44913111456d
     }
 
 
