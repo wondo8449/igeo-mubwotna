@@ -6,7 +6,6 @@ import com.sparta.igeomubwotna.dto.SignupRequestDto;
 import com.sparta.igeomubwotna.entity.User;
 import com.sparta.igeomubwotna.jwt.JwtUtil;
 import com.sparta.igeomubwotna.repository.UserRepository;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
