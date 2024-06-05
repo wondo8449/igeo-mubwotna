@@ -1,6 +1,7 @@
 package com.sparta.igeomubwotna.controller;
 
 import com.sparta.igeomubwotna.dto.Response;
+import com.sparta.igeomubwotna.dto.SigninRequestDto;
 import com.sparta.igeomubwotna.dto.SignupRequestDto;
 import com.sparta.igeomubwotna.service.UserService;
 import jakarta.validation.Valid;
@@ -25,6 +26,28 @@ public class UserController {
 
     @PostMapping("/user/signup")
     public ResponseEntity<Response> signup(@RequestBody @Valid SignupRequestDto requestDto, BindingResult bindingResult) {
+        ResponseEntity<Response> returnError = checkError("회원가입에 실패하였습니다.", bindingResult);
+
+        if (returnError != null) {
+            return returnError;
+        }
+
+        // UserService의 signup 메서드에 데이터 넘겨 줌
+        return userService.signup(requestDto);
+    }
+
+    @PostMapping("/user/login")
+    public ResponseEntity<Response> signin(@RequestBody @Valid SigninRequestDto requestDto, BindingResult bindingResult) {
+        ResponseEntity<Response> returnError = checkError("회원가입에 실패하였습니다.", bindingResult);
+
+        if (returnError != null) {
+            return returnError;
+        }
+        return null;
+    }
+
+    // 클라이언트에서 입력받아 오는 값을 유효성 검사하는 로직
+    public ResponseEntity<Response> checkError(String message, BindingResult bindingResult) {
         // 유효성 검사 예외 처리
         List<FieldError> fieldErrors = bindingResult.getFieldErrors();
 
@@ -38,11 +61,10 @@ public class UserController {
                 errorMessages.add(errorMessage);
             }
             // 오류 메시지와 상태 코드 반환
-            Response response = new Response(HttpStatus.BAD_REQUEST.value(), "회원가입에 실패하였습니다.", errorMessages);
+            Response response = new Response(HttpStatus.BAD_REQUEST.value(), message, errorMessages);
             return ResponseEntity.badRequest().body(response);
         }
 
-        // UserService의 signup 메서드에 데이터 넘겨 줌
-        return userService.signup(requestDto);
+        return null;
     }
 }
