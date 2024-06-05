@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -28,13 +29,16 @@ public class UserController {
         List<FieldError> fieldErrors = bindingResult.getFieldErrors();
 
         // 유효성 검사에 오류가 있으면
-        if(fieldErrors.size() > 0) {
-            // 모든 필드 오류에 대해 로그 기록
-            for(FieldError fieldError: bindingResult.getFieldErrors()) {
-                log.error(fieldError.getField() + " 필드: " + fieldError.getDefaultMessage());
+        if (fieldErrors.size() > 0) {
+            // 모든 필드 오류에 대해 로그 기록 및 오류 메시지 수집
+            List<String> errorMessages = new ArrayList<>();
+            for (FieldError fieldError : bindingResult.getFieldErrors()) {
+                String errorMessage = fieldError.getField() + " 필드: " + fieldError.getDefaultMessage();
+                log.error(errorMessage);
+                errorMessages.add(errorMessage);
             }
             // 오류 메시지와 상태 코드 반환
-            Response response = new Response(HttpStatus.BAD_REQUEST.value(), "회원가입에 실패하였습니다.");
+            Response response = new Response(HttpStatus.BAD_REQUEST.value(), "회원가입에 실패하였습니다.", errorMessages);
             return ResponseEntity.badRequest().body(response);
         }
 
