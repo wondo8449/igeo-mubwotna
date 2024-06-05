@@ -10,6 +10,7 @@ import com.sparta.igeomubwotna.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -23,7 +24,7 @@ public class LikeService {
     public ResponseEntity addRecipeLike(Long recipeId, User user) {
 
         User foundUser = userRepository.findByUserId(user.getUserId()).orElseThrow(
-                () -> new IllegalArgumentException("해당 레시피는 존재하지 않습니다."));
+                () -> new IllegalArgumentException("해당 유저는 존재하지 않습니다."));
 
         Recipe foundRecipe = recipeRepository.findById(recipeId).orElseThrow(
                 () -> new IllegalArgumentException("해당 레시피는 존재하지 않습니다."));
@@ -33,5 +34,16 @@ public class LikeService {
         recipeLikesRepository.save(RecipeLikes);
 
         return ResponseEntity.status(200).body("좋아요 성공!");
+    }
+
+    @Transactional
+    public ResponseEntity removeRecipeLike(Long recipeLikeId, User user) {
+
+        RecipeLikes foundlike = recipeLikesRepository.findById(recipeLikeId).orElseThrow(
+                () -> new IllegalArgumentException("해당 좋아요가 존재하지 않습니다."));
+
+        recipeLikesRepository.delete(foundlike);
+
+        return ResponseEntity.status(200).body("좋아요 취소 성공!");
     }
 }

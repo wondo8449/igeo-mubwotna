@@ -18,4 +18,9 @@ public class LikeController {
     public ResponseEntity addRecipeLike(@PathVariable Long recipeId, User user) {
         return likeService.addRecipeLike(recipeId, user);
     }
+
+    @DeleteMapping("/recipe/{recipeLikeId}")
+    public ResponseEntity removeRecipeLike(@PathVariable Long recipeLikeId, User user) {
+        return likeService.removeRecipeLike(recipeLikeId, user);
+    }
 }
