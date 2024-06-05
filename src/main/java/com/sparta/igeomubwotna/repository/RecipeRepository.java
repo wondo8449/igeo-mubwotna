@@ -1,4 +1,7 @@
 package com.sparta.igeomubwotna.repository;
 
-public interface RecipeRepository {
+import com.sparta.igeomubwotna.entity.Recipe;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface RecipeRepository extends JpaRepository<Recipe, Long> {
 }

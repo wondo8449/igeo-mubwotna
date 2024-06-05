@@ -46,5 +46,8 @@ public class Comment extends Timestamped{
         this.user = user;
     }
 
-
+    /* comment 수정 메서드 */
+    public void update(String content) {
+        this.content = content;
+    }
 }
