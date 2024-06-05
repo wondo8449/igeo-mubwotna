@@ -50,11 +50,4 @@ public class UserService {
         return ResponseEntity.ok(response);
     }
 
-
-    /* userId로 user 찾기 */
-    public User findUserById(Long userId) {
-        return userRepository.findById(userId).orElseThrow(() ->
-                new IllegalArgumentException("존재하지 않는 사용자입니다.")
-        );
-    }
 }
