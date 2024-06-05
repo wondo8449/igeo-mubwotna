@@ -22,4 +22,11 @@ public class RecipeService {
 		Recipe recipe = recipeRepository.save(new Recipe(requestDto, user));
 		return new RecipeResponseDto(recipe);
 	}
+
+	public RecipeResponseDto getRecipe(Long recipeId) {
+		Recipe recipe = recipeRepository.findById(recipeId).orElseThrow(() ->
+			new IllegalArgumentException("선택한 recipe는 존재하지 않습니다.")
+		);
+		return new RecipeResponseDto(recipe);
+	}
 }
