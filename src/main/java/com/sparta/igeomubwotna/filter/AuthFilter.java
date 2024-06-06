@@ -1,10 +1,8 @@
 package com.sparta.igeomubwotna.filter;
 
-import ch.qos.logback.core.util.StringUtil;
 import com.sparta.igeomubwotna.entity.User;
 import com.sparta.igeomubwotna.jwt.JwtUtil;
 import com.sparta.igeomubwotna.repository.UserRepository;
-import com.sun.jdi.connect.IllegalConnectorArgumentsException;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
