@@ -29,4 +29,17 @@ public class RecipeService {
 		);
 		return new RecipeResponseDto(recipe);
 	}
+
+	@Transactional
+	public RecipeResponseDto updateRecipe(Long recipeId, RecipeRequestDto requestDto, User user) {
+		Recipe recipe = recipeRepository.findById(recipeId).orElseThrow(() ->
+			new IllegalArgumentException("선택한 recipe는 존재하지 않습니다.")
+		);
+
+		recipe.update(requestDto);
+		return new RecipeResponseDto(recipe);
+
+	}
+
+
 }

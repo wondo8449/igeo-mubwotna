@@ -41,4 +41,9 @@ public class Recipe extends Timestamped{
 		this.content = requestDto.getContent();
 		this.user = user;
 	}
+
+	public void update(RecipeRequestDto requestDto) {
+		// 내용만 수정 가능
+		this.content = requestDto.getContent();
+	}
 }
