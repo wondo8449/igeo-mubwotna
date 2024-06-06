@@ -18,23 +18,23 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
-@EnableWebSecurity // Spring Security 지원을 가능하게 함
+@EnableWebSecurity
 @RequiredArgsConstructor
 public class WebSecurityConfig {
 
     private final JwtUtil jwtUtil;
-    private final UserDetailsServiceImpl userDetailsService;  //사용자 정보를 로드하는 서비스
-    private final AuthenticationConfiguration authenticationConfiguration;  //인증 구성을 위한 클래스.
+    private final UserDetailsServiceImpl userDetailsService; ;  //사용자 정보를 로드하는 서비스
+    private final AuthenticationConfiguration authenticationConfiguration; //인증 구성을 위한 클래스.
 
     @Bean
-    public PasswordEncoder passwordEncoder() {  //비밀번호를 암호화하기 위한 PasswordEncoder를 빈으로 정의
-        return new BCryptPasswordEncoder();  //여기서는 BCryptPasswordEncoder를 사용
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 
     @Bean
     // 인증 관리자를 빈으로 정의
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
-        return configuration.getAuthenticationManager();  //authenticationConfiguration을 이용하여 AuthenticationManager를 반환
+        return configuration.getAuthenticationManager(); //authenticationConfiguration을 이용하여 AuthenticationManager를 반환
     }
 
     @Bean
@@ -43,6 +43,7 @@ public class WebSecurityConfig {
         // 이 필터는 JWT를 사용하여 인증을 처리하며, 인증 관리자를 설정
         JwtAuthenticationFilter filter = new JwtAuthenticationFilter(jwtUtil);
         filter.setAuthenticationManager(authenticationManager(authenticationConfiguration));
+        filter.setFilterProcessesUrl("/user/signin"); // 로그인 엔드포인트를 설정 (특정 작업을 수행하기 위해 서버에 요청을 보내는 url)
         return filter;
     }
 
@@ -75,7 +76,6 @@ public class WebSecurityConfig {
         http.addFilterBefore(jwtAuthorizationFilter(), JwtAuthenticationFilter.class);
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
-        // SecurityFilterChain 객체를 생성하고 반환
         return http.build();
     }
 }
