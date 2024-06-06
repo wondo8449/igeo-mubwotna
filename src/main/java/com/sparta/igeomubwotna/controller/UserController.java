@@ -11,7 +11,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -38,9 +37,8 @@ public class UserController {
     }
 
     @GetMapping("/user/me")
-    public ResponseEntity<UserProfileDto> getCurrentUserProfile(Authentication authentication) {
+    public ResponseEntity<UserProfileDto> getCurrentUserProfile(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         // 인증 객체에서 사용자 정보를 추출
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         UserProfileDto userProfile = userService.getUserProfile(userDetails.getUser().getId());
         return ResponseEntity.ok(userProfile);
     }
