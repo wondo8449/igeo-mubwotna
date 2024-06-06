@@ -29,7 +29,7 @@ public class UserController {
         return userService.signup(requestDto, bindingResult);
     }
 
-    @PostMapping("/user/login")
+    @PostMapping("/user/signin")
     public ResponseEntity<Response> signin(@RequestBody @Valid SigninRequestDto requestDto, HttpServletResponse res, BindingResult bindingResult) {
         return userService.signin(requestDto, res, bindingResult);
     }
