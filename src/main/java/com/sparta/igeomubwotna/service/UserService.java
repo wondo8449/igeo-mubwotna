@@ -71,41 +71,6 @@ public class UserService {
         return ResponseEntity.ok(response);
     }
 
-    public ResponseEntity<Response> signin(@Valid SigninRequestDto requestDto, HttpServletResponse res, BindingResult bindingResult) {
-        ResponseEntity<Response> returnError = checkError("로그인에 실패하였습니다.", bindingResult);
-
-        if (returnError != null) {
-            return returnError;
-        }
-
-        String userId = requestDto.getUserId();
-        String password = requestDto.getPassword();
-
-        // 있는 회원인지 확인
-        Optional<User> user = userRepository.findByUserId(userId);
-
-        if (user.isPresent()) {
-            // 비밀번호 확인(평문, 암호화)
-            // password가 일치하지 않으면
-            if(!passwordEncoder.matches(password, user.get().getPassword())) {
-                // 오류 메시지와 상태 코드 반환
-                Response response = new Response(HttpStatus.BAD_REQUEST.value(), "비밀번호가 다릅니다.");
-
-                return ResponseEntity.badRequest().body(response);
-            }
-
-        } else {
-            // 오류 메시지와 상태 코드 반환
-            Response response = new Response(HttpStatus.BAD_REQUEST.value(), "아이디가 존재하지 않습니다.");
-
-            return ResponseEntity.badRequest().body(response);
-        }
-
-        Response response = new Response(HttpStatus.OK.value(), "로그인에 성공하였습니다.");
-
-        return ResponseEntity.ok().body(response);
-    }
-
     // 클라이언트에서 입력받아 오는 값을 유효성 검사하는 로직
     public ResponseEntity<Response> checkError(String message, BindingResult bindingResult) {
         // 유효성 검사 예외 처리
