@@ -4,6 +4,7 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -16,8 +17,11 @@ import java.util.Date;
 @Slf4j(topic = "JWT 관련 로그")
 @Component
 public class JwtUtil {
-    // Header KEY 값 (이름)
-    public static final String AUTHORIZATION_HEADER = "Authorization";
+    // AccessToken KEY 값 (이름)
+    public static final String ACCESS_HEADER = "ACCESS";
+    // AccessToken KEY 값 (이름)
+    public static final String REFRESH_HEADER = "REFRESH";
+
     // 사용자 상태 값의 KEY (이름)
     public static final String AUTHORIZATION_KEY = "status";
     // Token 식별자
