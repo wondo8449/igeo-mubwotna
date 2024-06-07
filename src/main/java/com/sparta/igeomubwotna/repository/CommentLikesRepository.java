@@ -10,7 +10,7 @@ import java.util.Optional;
 
 @Repository
 public interface CommentLikesRepository extends JpaRepository<CommentLikes, Long> {
-    Optional<Object> findByUserAndRecipe(User foundUser, Comment foundComment);
+    Optional<Object> findByUserAndComment(User foundUser, Comment foundComment);
 
     Long countByComment(Comment comment);
 }

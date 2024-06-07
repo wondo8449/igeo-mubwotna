@@ -63,7 +63,7 @@ public class LikeService {
             new IllegalArgumentException("자신이 작성한 댓글에는 좋아요를 남길 수 없습니다.");
         }
 
-        if(commentLikesRepository.findByUserAndRecipe(foundUser, foundComment).isPresent()) {
+        if(commentLikesRepository.findByUserAndComment(foundUser, foundComment).isPresent()) {
             new IllegalArgumentException("이미 좋아요를 누른 댓글입니다.");
         }
 
@@ -85,12 +85,12 @@ public class LikeService {
         return ResponseEntity.status(200).body("좋아요 취소 성공!");
     }
 
-    public Long getLike(Recipe recipe) {
-        return recipeLikesRepository.countByRecipe(recipe);
-    }
-
-    public
-    Long getLike(Comment comment) {
-        return commentLikesRepository.countByComment(comment);
-    }
+//    public Long getLike(Recipe recipe) {
+//        return recipeLikesRepository.countByRecipe(recipe);
+//    }
+//
+//    public
+//    Long getLike(Comment comment) {
+//        return commentLikesRepository.countByComment(comment);
+//    }
 }
