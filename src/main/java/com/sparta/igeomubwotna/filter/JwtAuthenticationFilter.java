@@ -3,10 +3,12 @@ package com.sparta.igeomubwotna.filter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.igeomubwotna.dto.SigninRequestDto;
 import com.sparta.igeomubwotna.jwt.JwtUtil;
+import com.sparta.igeomubwotna.repository.UserRepository;
 import com.sparta.igeomubwotna.security.UserDetailsImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -15,14 +17,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import java.io.IOException;
 
+@RequiredArgsConstructor
 @Slf4j(topic = "로그인 및 JWT 생성")
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private final JwtUtil jwtUtil;
-
-    public JwtAuthenticationFilter(JwtUtil jwtUtil) {
-        this.jwtUtil = jwtUtil;
-    }
-
+    private final UserRepository userRepository;
 
     // 로그인 시도 처리
     @Override
@@ -55,18 +54,24 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 //        UserRoleEnum role = ((UserDetailsImpl) authResult.getPrincipal()).getUser().getRole();
 
         // AccessToken 생성
-        String AccessToken = jwtUtil.createAccessToken(userId);
+        String accessToken = jwtUtil.createAccessToken(userId);
         // 응답 헤더에 AccessToken 추가
-        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, AccessToken);
+        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, accessToken);
 
         // RefreshToken 생성
-        String RefreshToken = jwtUtil.createRefreshToken(userId);
+        String refreshToken = jwtUtil.createRefreshToken(userId);
+        // 응답 헤더에 RefreshToken 추가
+        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, refreshToken);
+
+        userRepository.findByUserId(userId).ifPresent(
+                user -> {
+                    user.setRefreshToken(refreshToken);
+                    userRepository.save(user);
+                }
+        );
 
         // 한국어 쓰기위해 인코딩
         response.setCharacterEncoding("UTF-8");
-
-        // 응답 헤더에 RefreshToken 추가
-        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, RefreshToken);
         response.getWriter().write("로그인 성공.");
     }
 
