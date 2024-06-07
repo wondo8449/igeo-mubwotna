@@ -40,7 +40,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         }
 
         // HTTP 요청에서 JWT 토큰 추출
-        String tokenValue = jwtUtil.getJwtFromHeader(req);
+        String tokenValue = jwtUtil.getAccessTokenFromHeader(req);
 
         if (StringUtils.hasText(tokenValue)) {
             // JWT 토큰 유효성 검증

@@ -72,11 +72,20 @@ public class JwtUtil {
 
     }
 
-    // header 에서 JWT 가져오기
-    public String getJwtFromHeader(HttpServletRequest request) {
-        String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
-            return bearerToken.substring(7);
+    // RefreshToken을 header에서 가져와서 반환하는 메서드
+    public String getRefreshTokenFromHeader(HttpServletRequest request) {
+        String refreshToken = request.getHeader(AUTHORIZATION_HEADER);
+        if (StringUtils.hasText(refreshToken) && !refreshToken.startsWith(BEARER_PREFIX)) {
+            return refreshToken;
+        }
+        return null;
+    }
+
+    // AccessToken을 header에서 가져와서 반환하는 메서드
+    public String getAccessTokenFromHeader(HttpServletRequest request) {
+        String accessToken = request.getHeader(AUTHORIZATION_HEADER);
+        if (StringUtils.hasText(accessToken) && accessToken.startsWith(BEARER_PREFIX)) {
+            return accessToken.substring(BEARER_PREFIX.length());
         }
         return null;
     }
