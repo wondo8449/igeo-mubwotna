@@ -1,5 +1,8 @@
 package com.sparta.igeomubwotna.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.sparta.igeomubwotna.dto.RecipeRequestDto;
 
 import jakarta.persistence.Column;
@@ -10,6 +13,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+
+import jakarta.persistence.OneToMany;
+
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,6 +27,7 @@ import lombok.Setter;
 @Table(name = "recipe")
 @NoArgsConstructor
 public class Recipe extends Timestamped{
+
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
