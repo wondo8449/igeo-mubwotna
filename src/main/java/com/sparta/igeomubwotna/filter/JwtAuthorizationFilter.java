@@ -39,18 +39,18 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             return; // 필터 체인을 빠져나갑니다.
         }
 
-        // HTTP 요청에서 JWT 토큰 추출
-        String tokenValue = jwtUtil.getAccessTokenFromHeader(req);
+        // HTTP 요청에서 Access 토큰 추출
+        String accessToken = jwtUtil.getAccessTokenFromHeader(req);
+        String refreshToken = jwtUtil.getRefreshTokenFromHeader(req);
 
-        if (StringUtils.hasText(tokenValue)) {
-            // JWT 토큰 유효성 검증
-            if (!jwtUtil.validateToken(tokenValue)) {
+        if (StringUtils.hasText(accessToken)) {
+            // Access 토큰 유효성 검증
+            if (!jwtUtil.validateAccessToken(accessToken, refreshToken, res)) {
                 // 유효하지 않은 토큰이면 에러 로깅 후 종료
-                log.error("Token Error");
                 return;
             }
             // JWT 토큰으로부터 사용자 정보(Claims) 추출
-            Claims info = jwtUtil.getUserInfoFromToken(tokenValue);
+            Claims info = jwtUtil.getUserInfoFromToken(accessToken);
 
             try {
                 // 사용자 인증 처리
