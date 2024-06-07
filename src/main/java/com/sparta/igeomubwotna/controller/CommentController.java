@@ -38,15 +38,17 @@ public class CommentController {
     @PatchMapping("/{commentId}")
     public CommentResponseDto updateComment(@PathVariable Long recipeId,
                                             @PathVariable Long commentId,
-                                            @RequestBody CommentRequestDto requestDto) {
-        return commentService.UpdateComment(recipeId, commentId, requestDto);
+                                            @RequestBody CommentRequestDto requestDto,
+                                            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return commentService.updateComment(recipeId, commentId, requestDto, userDetails.getUser());
     }
 
     /* Delete */
     @DeleteMapping("/{commentId}")
     public ResponseEntity delete(@PathVariable Long recipeId,
-                                 @PathVariable Long commentId) {
-        commentService.deleteComment(recipeId, commentId);
+                                 @PathVariable Long commentId,
+                                 @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        commentService.deleteComment(recipeId, commentId, userDetails.getUser());
 
         Response response = new Response(HttpStatus.OK.value(), "댓글이 삭제되었습니다");
         return ResponseEntity.ok().body(response);
