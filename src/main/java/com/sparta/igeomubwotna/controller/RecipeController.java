@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -57,5 +58,11 @@ public class RecipeController {
 		@RequestBody RecipeRequestDto requestDto,
 		@AuthenticationPrincipal UserDetailsImpl userDetails) {
 		return ResponseEntity.status(HttpStatus.OK).body(recipeService.updateRecipe(recipeId, requestDto, userDetails.getUser()));
+	}
+
+	@DeleteMapping("recipe/{recipeId}")
+	public ResponseEntity deleteRecipe(@PathVariable Long recipeId,
+		@AuthenticationPrincipal UserDetailsImpl userDetails) {
+		return ResponseEntity.status(HttpStatus.OK).body(recipeService.deleteRecipe(recipeId, userDetails.getUser()));
 	}
 }
