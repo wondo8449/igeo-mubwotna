@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -41,8 +43,8 @@ public class User extends Timestamped {
     private LocalDateTime statusModifiedAt;
 
 
-    // @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
-    // private List<Recipe> recipes = new ArrayList<>();
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    private List<Recipe> recipes = new ArrayList<>();
     //
     // @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     // private List<Comment> comments = new ArrayList<>();

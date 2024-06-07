@@ -10,7 +10,7 @@ import java.util.Optional;
 
 @Repository
 public interface RecipeLikesRepository extends JpaRepository<RecipeLikes, Long> {
-    Optional<RecipeLikes> findByUserId(Long userId);
-
     Optional<RecipeLikes> findByUserAndRecipe(User foundUser, Recipe foundRecipe);
+
+    Long countByRecipe(Recipe recipe);
 }
