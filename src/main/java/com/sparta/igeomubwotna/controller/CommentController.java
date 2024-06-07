@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -46,9 +45,8 @@ public class CommentController {
     /* Delete */
     @DeleteMapping("/{commentId}")
     public ResponseEntity delete(@PathVariable Long recipeId,
-                                 @PathVariable Long commentId,
-                                 @RequestBody CommentRequestDto requestDto) {
-        commentService.deleteComment(recipeId, commentId, requestDto);
+                                 @PathVariable Long commentId) {
+        commentService.deleteComment(recipeId, commentId);
 
         Response response = new Response(HttpStatus.OK.value(), "댓글이 삭제되었습니다");
         return ResponseEntity.ok().body(response);

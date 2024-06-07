@@ -7,14 +7,12 @@ import com.sparta.igeomubwotna.entity.Recipe;
 import com.sparta.igeomubwotna.entity.User;
 import com.sparta.igeomubwotna.repository.CommentRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -63,7 +61,7 @@ public class CommentService {
     }
 
     /* Delete : 댓글 삭제 */
-    public void deleteComment(Long recipeId, Long commentId, CommentRequestDto requestDto) {
+    public void deleteComment(Long recipeId, Long commentId) {
         Recipe recipe = recipeService.findById(recipeId);
         Comment comment = findById(commentId);
 
