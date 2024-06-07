@@ -27,9 +27,10 @@ public class UserDetailsImpl implements UserDetails {
 		return user.getPassword();
 	}
 
+	// Override 메서드라 메서드명이 고정입니다.
 	@Override
 	public String getUsername() {
-		return user.getName();
+		return user.getUserId();
 	}
 
 	@Override
