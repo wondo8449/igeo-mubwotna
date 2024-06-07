@@ -1,5 +1,6 @@
 package com.sparta.igeomubwotna.service;
 
+import com.sparta.igeomubwotna.dto.PasswordDto;
 import com.sparta.igeomubwotna.dto.Response;
 import com.sparta.igeomubwotna.dto.SigninRequestDto;
 import com.sparta.igeomubwotna.dto.SignupRequestDto;
@@ -164,6 +165,31 @@ public class UserService {
         userRepository.save(user);  // 사용자 정보 저장
 
         Response response = new Response(HttpStatus.OK.value(), "프로필 정보를 성공적으로 수정하였습니다.");
+        return ResponseEntity.ok().body(response);
+    }
+
+    public ResponseEntity<Response> withdrawUser(PasswordDto passwordDto, Long userId) {
+        // ID로 사용자를 검색하고, 없으면 예외를 던짐
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 사용자를 찾을 수 없습니다."));
+
+        // 이미 탈퇴한 사용자인지 확인
+        if (user.isWithdrawn()) {
+            Response response = new Response(HttpStatus.BAD_REQUEST.value(), "이미 탈퇴한 사용자입니다.");
+            return ResponseEntity.badRequest().body(response);
+        }
+
+        // 입력받은 비밀번호를 인코딩하여 기존 비밀번호와 비교
+        if (!passwordEncoder.matches(passwordDto.getPassword(), user.getPassword())) {
+            Response response = new Response(HttpStatus.BAD_REQUEST.value(), "비밀번호가 일치하지 않습니다.");
+            return ResponseEntity.badRequest().body(response);
+        }
+
+        // 회원 탈퇴 처리
+        user.withdraw();
+        userRepository.save(user);
+
+        Response response = new Response(HttpStatus.OK.value(), "회원 탈퇴가 성공적으로 완료되었습니다.");
         return ResponseEntity.ok().body(response);
     }
 }

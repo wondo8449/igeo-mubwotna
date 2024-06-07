@@ -1,5 +1,6 @@
 package com.sparta.igeomubwotna.controller;
 
+import com.sparta.igeomubwotna.dto.PasswordDto;
 import com.sparta.igeomubwotna.dto.Response;
 import com.sparta.igeomubwotna.dto.SigninRequestDto;
 import com.sparta.igeomubwotna.dto.SignupRequestDto;
@@ -47,5 +48,11 @@ public class UserController {
     public ResponseEntity<Response> updateUserProfile(@RequestBody @Valid UserUpdateRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         // 인증 객체에서 사용자 정보를 추출
         return userService.updateUserProfile(requestDto, userDetails.getUser().getId());
+    }
+
+    @PatchMapping("/user/withdraw")
+    public ResponseEntity<Response> withdrawUser(@RequestBody PasswordDto passwordDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        // 인증 객체에서 사용자 정보를 추출
+        return userService.withdrawUser(passwordDto, userDetails.getUser().getId());
     }
 }
