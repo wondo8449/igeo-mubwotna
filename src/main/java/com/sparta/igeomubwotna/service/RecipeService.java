@@ -19,6 +19,7 @@ public class RecipeService {
 
 
 	private final RecipeRepository recipeRepository;
+	private final LikeService likeService;
 
 	@Transactional
 	public RecipeResponseDto saveRecipe(RecipeRequestDto requestDto, User user) {
@@ -28,6 +29,7 @@ public class RecipeService {
 
 	public RecipeResponseDto getRecipe(Long recipeId) {
 		Recipe recipe = findById(recipeId);
+		recipe.setRecipeLikes(likeService.getLike(recipe));
 		return new RecipeResponseDto(recipe);
 	}
 
