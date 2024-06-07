@@ -19,8 +19,6 @@ import java.util.Date;
 public class JwtUtil {
     // AccessToken KEY 값 (이름)
     public static final String ACCESS_HEADER = "Authorization";
-    // AccessToken KEY 값 (이름)
-    public static final String REFRESH_HEADER = "X-Refresh-Token"; // X가 앞에 있으면 서버에서 발급한 키
 
     // 사용자 상태 값의 KEY (이름)
     public static final String AUTHORIZATION_KEY = "status";

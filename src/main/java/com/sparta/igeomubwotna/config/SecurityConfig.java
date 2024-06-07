@@ -53,7 +53,7 @@ public class SecurityConfig {
     // JWT 인가(권한 부여) 필터를 빈으로 정의
     public JwtAuthorizationFilter jwtAuthorizationFilter() {
         // 이 필터는 JWT를 사용하여 권한 부여를 처리
-        return new JwtAuthorizationFilter(jwtUtil, userDetailsService);
+        return new JwtAuthorizationFilter(jwtUtil, userDetailsService, userRepository);
     }
 
     @Bean

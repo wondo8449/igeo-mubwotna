@@ -1,6 +1,7 @@
 package com.sparta.igeomubwotna.filter;
 
 import com.sparta.igeomubwotna.jwt.JwtUtil;
+import com.sparta.igeomubwotna.repository.UserRepository;
 import com.sparta.igeomubwotna.security.UserDetailsServiceImpl;
 
 import io.jsonwebtoken.Claims;
@@ -24,10 +25,12 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
     private final UserDetailsServiceImpl userDetailsService;
+    private final UserRepository userRepository;
 
-    public JwtAuthorizationFilter(JwtUtil jwtUtil, UserDetailsServiceImpl userDetailsService) {
+    public JwtAuthorizationFilter(JwtUtil jwtUtil, UserDetailsServiceImpl userDetailsService, UserRepository userRepository) {
         this.jwtUtil = jwtUtil;
         this.userDetailsService = userDetailsService;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -41,7 +44,9 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
         // HTTP 요청에서 Access 토큰 추출
         String accessToken = jwtUtil.getAccessTokenFromHeader(req);
-        String refreshToken = jwtUtil.getRefreshTokenFromHeader(req);
+        String userId = jwtUtil.getUserInfoFromToken(accessToken).getSubject();
+        // 유저 정보로 refreshToken 들고오기
+        String refreshToken = userRepository.findByUserId(userId).get().getRefreshToken();
 
         if (StringUtils.hasText(accessToken)) {
             // Access 토큰 유효성 검증
