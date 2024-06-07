@@ -9,6 +9,7 @@ import com.sparta.igeomubwotna.repository.CommentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -33,8 +34,13 @@ public class CommentService {
     public List<CommentResponseDto> getComment(Long recipeId) {
         Recipe recipe = recipeService.findRecipeById(recipeId);
 
-        List<Commemt> commentList = commentRepository.findByRecipeId(recipeId);
-        return commentList;
+        List<Comment> commentList = commentRepository.findByRecipeId(recipeId);
+        List<CommentResponseDto> commentResponseDtoList = new ArrayList<>();
+
+        for (Comment comment : commentList) {
+            commentResponseDtoList.add(CommentResponseDto.toDto(comment));
+        }
+        return commentResponseDtoList;
     }
 
 
