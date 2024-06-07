@@ -37,7 +37,7 @@ public class Recipe extends Timestamped{
 	@Column(nullable = false)
 	private String content;
 
-	@Column(nullable = false)
+	@Column
 	private Long recipeLikes;
 
 	public Recipe(RecipeRequestDto requestDto, User user) {
@@ -47,6 +47,7 @@ public class Recipe extends Timestamped{
 	}
 
 	public void update(RecipeRequestDto requestDto) {
+		this.title = requestDto.getTitle();
 		this.content = requestDto.getContent();
 	}
 }

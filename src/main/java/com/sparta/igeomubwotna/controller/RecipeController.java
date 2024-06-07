@@ -2,6 +2,7 @@ package com.sparta.igeomubwotna.controller;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -67,4 +68,15 @@ public class RecipeController {
 		@AuthenticationPrincipal UserDetailsImpl userDetails) {
 		return ResponseEntity.status(HttpStatus.OK).body(recipeService.deleteRecipe(recipeId, userDetails.getUser()));
 	}
+
+
+	@GetMapping("/")
+	public ResponseEntity<Page<RecipeResponseDto>> getAllRecipe(@RequestParam("page") int page,
+		@RequestParam("size") int size,
+		@RequestParam("sortBy") String sortBy) {
+		return ResponseEntity.status(HttpStatus.OK).body(recipeService.getAllRecipe(page-1, sortBy));
+
+	}
+
+
 }
