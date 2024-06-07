@@ -60,8 +60,14 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         // RefreshToken 생성
         String refreshToken = jwtUtil.createRefreshToken(userId);
-        // 응답 헤더에 RefreshToken 추가
-        response.addHeader(JwtUtil.REFRESH_HEADER, refreshToken);
+
+        // 로그인시 RefreshToken을 user DB에 저장
+        userRepository.findByUserId(userId).ifPresent(
+                user -> {
+                    user.setRefreshToken(refreshToken);
+                    userRepository.save(user);
+                }
+        );
 
         userRepository.findByUserId(userId).ifPresent(
                 user -> {
