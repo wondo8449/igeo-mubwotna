@@ -28,7 +28,8 @@ public class JwtUtil {
     // Token 식별자
     public static final String BEARER_PREFIX = "Bearer ";
     // 토큰 만료시간
-    private final long TOKEN_TIME = 60 * 60 * 1000L; // 60분
+    private final long ACCESS_TOKEN_TIME = 30 * 60 * 1000L; // 30분
+    private final long REFRESH_TOKEN_TIME = 14 * 24 * 60 * 60 * 1000L; // 2주
 
     @Value("${jwt.secret.key}") // Base64 Encode 한 SecretKey
     private String secretKey;
@@ -45,7 +46,7 @@ public class JwtUtil {
 
     // 토큰 생성
     // TODO: 나중에 user에 상태가 필요하면 말씀해 주세요!
-    public String createToken(String userId) {
+    public String createAccessToken(String userId) {
         Date date = new Date();
 
         return BEARER_PREFIX +
@@ -58,18 +59,17 @@ public class JwtUtil {
 //                        .claim() // 상태
     }
 
-    // JWT Cookie에 저장
-    public void addJwtToCookie(String token, HttpServletResponse res) {
-        try {
-            token = URLEncoder.encode(token, "utf-8").replaceAll("\\+", "%20"); // Cokkie애는 공백 불가 -> %20로 변경
+    // RefreshToken 생성
+    public String createRefreshToken(String userId) {
+        Date date = new Date();
 
-            Cookie cookie = new Cookie(AUTHORIZATION_HEADER, token); // 이름 값
-            cookie.setPath("/");
+        return Jwts.builder()
+                .setSubject(userId)
+                .setExpiration(new Date(date.getTime() + REFRESH_TOKEN_TIME))
+                .setIssuedAt(date)
+                .signWith(key, signatureAlgorithm)
+                .compact();
 
-            res.addCookie(cookie);
-        } catch (UnsupportedEncodingException e) {
-            log.error(e.getMessage());
-        }
     }
 
     // JWT 토큰 substring

@@ -13,7 +13,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+
 import jakarta.persistence.OneToMany;
+
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,31 +28,31 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Recipe extends Timestamped{
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userId", nullable = false)
-    private User user;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    @Column(nullable = false)
-    private String title;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "userId", nullable = false)
+	private User user;
 
-    @Column(nullable = false)
-    private String content;
+	@Column(nullable = false)
+	private String title;
 
-//    @OneToMany(mappedBy ="recipe", orphanRemoval = true)
-//    private List<RecipeLikes> recipeLikesList = new ArrayList<>();
-//
-//    public Recipe(RecipeRequestDto requestDto, User user) {
-//        this.title = requestDto.getTitle();
-//        this.content = requestDto.getContent();
-//        this.user = user;
-//    }
-//
-//    public void update(RecipeRequestDto requestDto) {
-//        // 내용만 수정 가능
-//        this.content = requestDto.getContent();
-//    }
+	@Column(nullable = false)
+	private String content;
+
+	@Column(nullable = false)
+	private Long recipeLikes;
+
+	public Recipe(RecipeRequestDto requestDto, User user) {
+		this.title = requestDto.getTitle();
+		this.content = requestDto.getContent();
+		this.user = user;
+	}
+
+	public void update(RecipeRequestDto requestDto) {
+		this.content = requestDto.getContent();
+	}
 }
