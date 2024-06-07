@@ -69,4 +69,15 @@ public class User extends Timestamped {
     public void setPassword(String password) {
         this.password = password;
     }
+
+
+    public boolean isWithdrawn() {
+        return this.status == UserStatusEnum.WITHDRAWN;
+    }
+
+    public void withdraw() {
+        this.status = UserStatusEnum.WITHDRAWN;
+        this.statusModifiedAt = LocalDateTime.now();
+    }
+
 }
