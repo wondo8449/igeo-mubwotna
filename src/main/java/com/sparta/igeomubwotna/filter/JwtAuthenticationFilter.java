@@ -56,12 +56,12 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         // AccessToken 생성
         String accessToken = jwtUtil.createAccessToken(userId);
         // 응답 헤더에 AccessToken 추가
-        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, accessToken);
+        response.addHeader(JwtUtil.ACCESS_HEADER, accessToken);
 
         // RefreshToken 생성
         String refreshToken = jwtUtil.createRefreshToken(userId);
         // 응답 헤더에 RefreshToken 추가
-        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, refreshToken);
+        response.addHeader(JwtUtil.REFRESH_HEADER, refreshToken);
 
         userRepository.findByUserId(userId).ifPresent(
                 user -> {
