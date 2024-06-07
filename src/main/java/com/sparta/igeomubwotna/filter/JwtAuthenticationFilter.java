@@ -31,7 +31,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             // 요청에서 로그인 정보를 읽어와 DTO에 매핑
             SigninRequestDto requestDto = new ObjectMapper().readValue(request.getInputStream(), SigninRequestDto.class);
 
-
             // 인증 매니저를 통해 사용자 인증 시도
             return getAuthenticationManager().authenticate(
                     new UsernamePasswordAuthenticationToken(
@@ -50,21 +49,35 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     // 로그인 성공 시 처리
     @Override
-    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) {
+    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException {
         // 사용자 아이디와 역할 정보를 가져옴
         String userId = ((UserDetailsImpl) authResult.getPrincipal()).getUsername();
 //        UserRoleEnum role = ((UserDetailsImpl) authResult.getPrincipal()).getUser().getRole();
 
-        // JWT 토큰 생성
-        String token = jwtUtil.createAccessToken(userId);
-        // 응답 헤더에 JWT 토큰 추가
-        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, token);
+        // AccessToken 생성
+        String AccessToken = jwtUtil.createAccessToken(userId);
+        // 응답 헤더에 AccessToken 추가
+        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, AccessToken);
+
+        // RefreshToken 생성
+        String RefreshToken = jwtUtil.createRefreshToken(userId);
+
+        // 한국어 쓰기위해 인코딩
+        response.setCharacterEncoding("UTF-8");
+
+        // 응답 헤더에 RefreshToken 추가
+        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, RefreshToken);
+        response.getWriter().write("로그인 성공.");
     }
 
     // 로그인 실패 시 처리
     @Override
-    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) {
+    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException {
         response.setStatus(401);
-    }
 
+        // 한국어 쓰기위해 인코딩
+        response.setCharacterEncoding("UTF-8");
+
+        response.getWriter().write("로그인 실패.");
+    }
 }
