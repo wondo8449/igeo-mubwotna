@@ -14,10 +14,6 @@ public class CommentResponseDto {
     private LocalDateTime createdAt;
     private Long likeCount;
 
-    public CommentResponseDto(String message) {
-        this.message = message;
-    }
-
     public CommentResponseDto(Long id, String content, String userId, LocalDateTime createdAt, Long likeCount) {
         this.id = id;
         this.content = content;

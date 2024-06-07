@@ -9,8 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class CommentRequestDto {
 
-    private Long userId;
     private String content;
-    private Long likeCount;
 
 }

@@ -41,7 +41,6 @@ public class Comment extends Timestamped{
     /* Constructor */
     public Comment(CommentRequestDto requestDto, Recipe recipe, User user) {
         this.content = requestDto.getContent();
-        this.likeCount = requestDto.getLikeCount();
         this.recipe = recipe;
         this.user = user;
     }

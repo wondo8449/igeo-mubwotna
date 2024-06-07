@@ -7,6 +7,8 @@ import com.sparta.igeomubwotna.entity.Recipe;
 import com.sparta.igeomubwotna.entity.User;
 import com.sparta.igeomubwotna.repository.CommentRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.RequestEntity;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,13 +25,13 @@ public class CommentService {
     private final UserService userService;
 
     /* Create : 댓글 작성 */
-    public CommentResponseDto createComment(CommentRequestDto requestDto, Long recipeId, Long userId) {
+    public ResponseEntity createComment(CommentRequestDto requestDto, Long recipeId, Long userId) {
         Recipe recipe = recipeService.findById(recipeId);
         User user = userService.findById(userId);
         Comment comment = new Comment(requestDto, recipe, user);
 
         commentRepository.save(comment);
-        return new CommentResponseDto("comment가 등록되었습니다.");
+        return ResponseEntity.ok("comment가 등록되었습니다.");
     }
 
     /* Read : 댓글 조회 (레시피에 대한 전체 댓글) */
