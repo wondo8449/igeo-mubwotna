@@ -56,7 +56,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 //        UserRoleEnum role = ((UserDetailsImpl) authResult.getPrincipal()).getUser().getRole();
 
         // JWT 토큰 생성
-        String token = jwtUtil.createToken(userId);
+        String token = jwtUtil.createAccessToken(userId);
         // 응답 헤더에 JWT 토큰 추가
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, token);
     }
