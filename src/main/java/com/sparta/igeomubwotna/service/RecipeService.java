@@ -41,5 +41,11 @@ public class RecipeService {
 
 	}
 
+	public Recipe findById(Long recipeId) {
+		return recipeRepository.findById(recipeId).orElseThrow(() ->
+			new IllegalArgumentException("해당 댓글이 존재하지 않습니다.")
+		);
+	}
+
 
 }

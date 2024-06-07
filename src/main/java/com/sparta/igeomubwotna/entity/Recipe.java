@@ -36,6 +36,9 @@ public class Recipe extends Timestamped{
 	@Column(nullable = false)
 	private String content;
 
+	@Column(nullable = false)
+	private Long recipeLikes;
+
 	public Recipe(RecipeRequestDto requestDto, User user) {
 		this.title = requestDto.getTitle();
 		this.content = requestDto.getContent();
@@ -43,7 +46,6 @@ public class Recipe extends Timestamped{
 	}
 
 	public void update(RecipeRequestDto requestDto) {
-		// 내용만 수정 가능
 		this.content = requestDto.getContent();
 	}
 }
