@@ -45,7 +45,7 @@ public class JwtUtil {
 
     // 토큰 생성
     // TODO: 나중에 user에 상태가 필요하면 말씀해 주세요!
-    public String createToken(String userId) {
+    public String createAccessToken(String userId) {
         Date date = new Date();
 
         return BEARER_PREFIX +
