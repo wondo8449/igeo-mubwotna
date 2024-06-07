@@ -73,7 +73,7 @@ public class JwtUtil {
 
     // RefreshToken을 header에서 가져와서 반환하는 메서드
     public String getRefreshTokenFromHeader(HttpServletRequest request) {
-        String refreshToken = request.getHeader(AUTHORIZATION_HEADER);
+        String refreshToken = request.getHeader(REFRESH_HEADER);
         if (StringUtils.hasText(refreshToken) && !refreshToken.startsWith(BEARER_PREFIX)) {
             return refreshToken;
         }
@@ -82,7 +82,7 @@ public class JwtUtil {
 
     // AccessToken을 header에서 가져와서 반환하는 메서드
     public String getAccessTokenFromHeader(HttpServletRequest request) {
-        String accessToken = request.getHeader(AUTHORIZATION_HEADER);
+        String accessToken = request.getHeader(ACCESS_HEADER);
         if (StringUtils.hasText(accessToken) && accessToken.startsWith(BEARER_PREFIX)) {
             return accessToken.substring(BEARER_PREFIX.length());
         }
@@ -107,12 +107,17 @@ public class JwtUtil {
     }
 
     // RefreshToken 검증 및 AccessToken 재발급
-    public String refreshAccessToken(String refreshToken) {
+    public String refreshAccessToken(String refreshToken, HttpServletResponse response) {
         if (validateToken(refreshToken)) {
             Claims claims = getUserInfoFromToken(refreshToken);
             String userId = claims.getSubject();
-            return createAccessToken(userId);
+            String newToken = createAccessToken(userId);
+
+            response.setHeader(ACCESS_HEADER, newToken);
+
+            return newToken;
         }
+        // TODO: 반환값이 null 값이 나오면 refreshToken도 문제가 있으니 새로 로그인 하라고 해야합니다!
         return null;
     }
 
