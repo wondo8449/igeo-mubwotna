@@ -32,11 +32,6 @@ public class UserController {
         return userService.signup(requestDto, bindingResult);
     }
 
-    @PostMapping("/user/signin")
-    public ResponseEntity<Response> signin(@RequestBody @Valid SigninRequestDto requestDto, HttpServletResponse res, BindingResult bindingResult) {
-        return userService.signin(requestDto, res, bindingResult);
-    }
-
     @GetMapping("/user/me")
     public ResponseEntity<UserProfileDto> getCurrentUserProfile(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         // 인증 객체에서 사용자 정보를 추출

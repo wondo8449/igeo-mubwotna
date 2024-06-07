@@ -3,7 +3,6 @@ package com.sparta.igeomubwotna.jwt;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -11,9 +10,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
@@ -21,8 +17,11 @@ import java.util.Date;
 @Slf4j(topic = "JWT 관련 로그")
 @Component
 public class JwtUtil {
-    // Header KEY 값 (이름)
-    public static final String AUTHORIZATION_HEADER = "Authorization";
+    // AccessToken KEY 값 (이름)
+    public static final String ACCESS_HEADER = "ACCESS";
+    // AccessToken KEY 값 (이름)
+    public static final String REFRESH_HEADER = "REFRESH";
+
     // 사용자 상태 값의 KEY (이름)
     public static final String AUTHORIZATION_KEY = "status";
     // Token 식별자
@@ -72,11 +71,20 @@ public class JwtUtil {
 
     }
 
-    // header 에서 JWT 가져오기
-    public String getJwtFromHeader(HttpServletRequest request) {
-        String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
-            return bearerToken.substring(7);
+    // RefreshToken을 header에서 가져와서 반환하는 메서드
+    public String getRefreshTokenFromHeader(HttpServletRequest request) {
+        String refreshToken = request.getHeader(REFRESH_HEADER);
+        if (StringUtils.hasText(refreshToken) && !refreshToken.startsWith(BEARER_PREFIX)) {
+            return refreshToken;
+        }
+        return null;
+    }
+
+    // AccessToken을 header에서 가져와서 반환하는 메서드
+    public String getAccessTokenFromHeader(HttpServletRequest request) {
+        String accessToken = request.getHeader(ACCESS_HEADER);
+        if (StringUtils.hasText(accessToken) && accessToken.startsWith(BEARER_PREFIX)) {
+            return accessToken.substring(BEARER_PREFIX.length());
         }
         return null;
     }
@@ -98,29 +106,23 @@ public class JwtUtil {
         return false;
     }
 
+    // RefreshToken 검증 및 AccessToken 재발급
+    public String refreshAccessToken(String refreshToken, HttpServletResponse response) {
+        if (validateToken(refreshToken)) {
+            Claims claims = getUserInfoFromToken(refreshToken);
+            String userId = claims.getSubject();
+            String newToken = createAccessToken(userId);
+
+            response.setHeader(ACCESS_HEADER, newToken);
+
+            return newToken;
+        }
+        // TODO: 반환값이 null 값이 나오면 refreshToken도 문제가 있으니 새로 로그인 하라고 해야합니다!
+        return null;
+    }
+
     // 토큰에서 사용자 정보 가져오기
     public Claims getUserInfoFromToken(String token) {
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
-    }
-
-    // 요청 쿠키에서 토큰 추출
-    public String getTokenFromRequest(HttpServletRequest req) {
-        Cookie[] cookies = req.getCookies();
-        // 쿠키가 존재하면
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                // 쿠키 이름이 AUTHORIZATION_HEADER와 일치하는 경우
-                if (cookie.getName().equals(AUTHORIZATION_HEADER)) {
-                    try {
-                        // 쿠키 값을 URL 디코딩하여 반환 (UTF-8 인코딩 사용)
-                        // 코딩된 쿠키 값을 다시 원래 값으로 되돌림
-                        return URLDecoder.decode(cookie.getValue(), "UTF-8"); // Encode 되어 넘어간 value 다시 Decode
-                    } catch (UnsupportedEncodingException e) {
-                        return null;
-                    }
-                }
-            }
-        }
-        return null;
     }
 }
