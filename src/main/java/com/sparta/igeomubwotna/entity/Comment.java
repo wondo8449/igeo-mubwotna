@@ -24,8 +24,8 @@ public class Comment extends Timestamped{
     private String content;
 
     //좋아요 수
-    @Column(nullable = false)
-    private Long likeCount;
+    @Column
+    private Long likeCount = 0L;
 
     /* Mapping */
     //작성자 ID
