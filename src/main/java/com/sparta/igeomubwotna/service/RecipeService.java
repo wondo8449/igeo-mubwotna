@@ -24,26 +24,40 @@ public class RecipeService {
 	}
 
 	public RecipeResponseDto getRecipe(Long recipeId) {
-		Recipe recipe = recipeRepository.findById(recipeId).orElseThrow(() ->
-			new IllegalArgumentException("선택한 recipe는 존재하지 않습니다.")
-		);
+		Recipe recipe = findById(recipeId);
 		return new RecipeResponseDto(recipe);
 	}
 
 	@Transactional
 	public RecipeResponseDto updateRecipe(Long recipeId, RecipeRequestDto requestDto, User user) {
-		Recipe recipe = recipeRepository.findById(recipeId).orElseThrow(() ->
-			new IllegalArgumentException("선택한 recipe는 존재하지 않습니다.")
-		);
+		Recipe recipe = findById(recipeId);
+
+		// 사용자가 일치하지 않는 경우
+		if (recipe.getUser().getId().equals(user.getId())) {
+			throw new IllegalArgumentException("작성자만 수정할 수 있습니다.");
+		}
 
 		recipe.update(requestDto);
 		return new RecipeResponseDto(recipe);
 
 	}
 
+	public String deleteRecipe(Long recipeId, User user) {
+		Recipe recipe = findById(recipeId);
+
+		// 사용자가 일치하지 않는 경우
+		if (recipe.getUser().getId().equals(user.getId())) {
+			throw new IllegalArgumentException("작성자만 삭제할 수 있습니다.");
+		}
+
+		recipeRepository.delete(recipe);
+
+		return (recipeId + " 번 삭제 완료");
+	}
+
 	public Recipe findById(Long recipeId) {
 		return recipeRepository.findById(recipeId).orElseThrow(() ->
-			new IllegalArgumentException("해당 댓글이 존재하지 않습니다.")
+			new IllegalArgumentException("해당 레시피가 존재하지 않습니다.")
 		);
 	}
 
