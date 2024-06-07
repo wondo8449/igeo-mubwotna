@@ -37,6 +37,9 @@ public class User extends Timestamped {
     @Enumerated(value = EnumType.STRING)
     private UserStatusEnum status;
 
+    @Column
+    private String refreshToken;
+
     @LastModifiedDate
     @Column
     @Temporal(TemporalType.TIMESTAMP)
@@ -71,4 +74,10 @@ public class User extends Timestamped {
     public void setPassword(String password) {
         this.password = password;
     }
+
+    public void setRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
+
+
 }
