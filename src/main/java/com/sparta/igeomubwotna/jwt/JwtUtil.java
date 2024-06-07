@@ -71,15 +71,6 @@ public class JwtUtil {
 
     }
 
-    // RefreshToken을 header에서 가져와서 반환하는 메서드
-    public String getRefreshTokenFromHeader(HttpServletRequest request) {
-        String refreshToken = request.getHeader(REFRESH_HEADER);
-        if (StringUtils.hasText(refreshToken) && !refreshToken.startsWith(BEARER_PREFIX)) {
-            return refreshToken;
-        }
-        return null;
-    }
-
     // AccessToken을 header에서 가져와서 반환하는 메서드
     public String getAccessTokenFromHeader(HttpServletRequest request) {
         String accessToken = request.getHeader(ACCESS_HEADER);
