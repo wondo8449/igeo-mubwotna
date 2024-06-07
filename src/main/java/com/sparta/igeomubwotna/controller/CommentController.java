@@ -2,8 +2,10 @@ package com.sparta.igeomubwotna.controller;
 
 import com.sparta.igeomubwotna.dto.CommentRequestDto;
 import com.sparta.igeomubwotna.dto.CommentResponseDto;
+import com.sparta.igeomubwotna.dto.Response;
 import com.sparta.igeomubwotna.service.CommentService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,7 +26,7 @@ public class CommentController {
         return commentService.createComment(requestDto, recipeId, userId);
     }
 
-    /* Update */
+    /* Read */
     @GetMapping
     public ResponseEntity<List<CommentResponseDto>> getComment (@PathVariable Long recipeId) {
         return ResponseEntity.ok().body(commentService.getComment(recipeId));
@@ -38,5 +40,15 @@ public class CommentController {
         return commentService.UpdateComment(recipeId, commentId, requestDto);
     }
 
+    /* Delete */
+    @DeleteMapping("/{commentId}")
+    public ResponseEntity delete (@PathVariable Long recipeId,
+                            @PathVariable Long commentId,
+                            @RequestBody CommentRequestDto requestDto) {
+        commentService.deleteComment(recipeId, commentId, requestDto);
+
+        Response response = new Response(HttpStatus.OK.value(), "댓글이 삭제되었습니다");
+        return ResponseEntity.ok().body(response);
+    }
 
 }

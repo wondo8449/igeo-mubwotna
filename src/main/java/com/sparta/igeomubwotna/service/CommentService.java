@@ -60,6 +60,18 @@ public class CommentService {
 
     }
 
+    /* Delete : 댓글 삭제 */
+    public void deleteComment(Long recipeId, Long commentId, CommentRequestDto requestDto) {
+        Recipe recipe = recipeService.findRecipeById(recipeId);
+        Comment comment = findById(commentId);
+
+        if (!Objects.equals(comment.getUser().getUserId(), requestDto.getUserId())) {
+            throw new IllegalArgumentException("작성자만 삭제할 수 있습니다.");
+        }
+
+        commentRepository.delete(comment);
+    }
+
 
     /* ID로 comment 찾기 */
     private Comment findById(Long commentId) {
@@ -67,6 +79,5 @@ public class CommentService {
                 new IllegalArgumentException("해당 댓글이 존재하지 않습니다.")
         );
     }
-
 
 }
