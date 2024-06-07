@@ -19,7 +19,7 @@ public class CommentController {
     private final CommentService commentService;
 
     /* Create */
-    @PostMapping
+    @PostMapping("/{userId}")
     public CommentResponseDto createComment (@RequestBody CommentRequestDto requestDto,
                                              @PathVariable Long recipeId,
                                              @PathVariable Long userId) {

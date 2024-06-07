@@ -24,8 +24,8 @@ public class CommentService {
 
     /* Create : 댓글 작성 */
     public CommentResponseDto createComment(CommentRequestDto requestDto, Long recipeId, Long userId) {
-        Recipe recipe = recipeService.findRecipeById(recipeId);
-        User user = userService.findUserById(userId);
+        Recipe recipe = recipeService.findById(recipeId);
+        User user = userService.findById(userId);
         Comment comment = new Comment(requestDto, recipe, user);
 
         commentRepository.save(comment);
@@ -34,7 +34,7 @@ public class CommentService {
 
     /* Read : 댓글 조회 (레시피에 대한 전체 댓글) */
     public List<CommentResponseDto> getComment(Long recipeId) {
-        Recipe recipe = recipeService.findRecipeById(recipeId);
+        Recipe recipe = recipeService.findById(recipeId);
 
         List<Comment> commentList = commentRepository.findByRecipeId(recipeId);
         List<CommentResponseDto> commentResponseDtoList = new ArrayList<>();
@@ -48,26 +48,17 @@ public class CommentService {
     /* Update : 댓글 수정*/
     @Transactional
     public CommentResponseDto UpdateComment(Long recipeId, Long commentId, CommentRequestDto requestDto) {
-        Recipe recipe = recipeService.findRecipeById(recipeId);
+        Recipe recipe = recipeService.findById(recipeId);
         Comment comment = findById(commentId);
-
-        if (!Objects.equals(comment.getUser().getUserId(), requestDto.getUserId())) {
-            throw new IllegalArgumentException("작성자만 수정할 수 있습니다.");
-        }
 
         comment.update(requestDto.getContent());
         return CommentResponseDto.toDto(comment);
-
     }
 
     /* Delete : 댓글 삭제 */
     public void deleteComment(Long recipeId, Long commentId, CommentRequestDto requestDto) {
-        Recipe recipe = recipeService.findRecipeById(recipeId);
+        Recipe recipe = recipeService.findById(recipeId);
         Comment comment = findById(commentId);
-
-        if (!Objects.equals(comment.getUser().getUserId(), requestDto.getUserId())) {
-            throw new IllegalArgumentException("작성자만 삭제할 수 있습니다.");
-        }
 
         commentRepository.delete(comment);
     }
