@@ -29,7 +29,7 @@ public class RecipeService {
 	}
 
 	@Transactional
-	public RecipeResponseDto updateRecipe(Long recipeId, RecipeRequestDto requestDto, User user) {
+	public RecipeResponseDto editRecipe(Long recipeId, RecipeRequestDto requestDto, User user) {
 		Recipe recipe = findById(recipeId);
 
 		// 사용자가 일치하지 않는 경우

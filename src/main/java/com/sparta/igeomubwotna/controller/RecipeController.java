@@ -56,10 +56,10 @@ public class RecipeController {
 	}
 
 	@PatchMapping("/{recipeId}")
-	public ResponseEntity<RecipeResponseDto> updateRecipe(@PathVariable Long recipeId,
+	public ResponseEntity<RecipeResponseDto> editRecipe(@PathVariable Long recipeId,
 		@RequestBody RecipeRequestDto requestDto,
 		@AuthenticationPrincipal UserDetailsImpl userDetails) {
-		return ResponseEntity.status(HttpStatus.OK).body(recipeService.updateRecipe(recipeId, requestDto, userDetails.getUser()));
+		return ResponseEntity.status(HttpStatus.OK).body(recipeService.editRecipe(recipeId, requestDto, userDetails.getUser()));
 	}
 
 	@DeleteMapping("/{recipeId}")
