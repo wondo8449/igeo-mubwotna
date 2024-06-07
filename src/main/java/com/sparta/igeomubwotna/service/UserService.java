@@ -166,4 +166,10 @@ public class UserService {
         Response response = new Response(HttpStatus.OK.value(), "프로필 정보를 성공적으로 수정하였습니다.");
         return ResponseEntity.ok().body(response);
     }
+
+    public User findById(Long recipeId) {
+        return userRepository.findById(recipeId).orElseThrow(() ->
+                new IllegalArgumentException("해당 사용자가 존재하지 않습니다.")
+        );
+    }
 }
