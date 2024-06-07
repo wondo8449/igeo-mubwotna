@@ -4,6 +4,9 @@ import java.time.LocalDateTime;
 
 import com.sparta.igeomubwotna.entity.Recipe;
 
+import lombok.Getter;
+
+@Getter
 public class RecipeResponseDto {
 	String title;
 	String content;

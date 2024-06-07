@@ -1,6 +1,10 @@
 package com.sparta.igeomubwotna.service;
 
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,7 +42,7 @@ public class RecipeService {
 		Recipe recipe = findById(recipeId);
 
 		// 사용자가 일치하지 않는 경우
-		if (recipe.getUser().getId().equals(user.getId())) {
+		if (!(recipe.getUser().getId().equals(user.getId()))) {
 			throw new IllegalArgumentException("작성자만 수정할 수 있습니다.");
 		}
 
@@ -51,13 +55,22 @@ public class RecipeService {
 		Recipe recipe = findById(recipeId);
 
 		// 사용자가 일치하지 않는 경우
-		if (recipe.getUser().getId().equals(user.getId())) {
+		if (!(recipe.getUser().getId().equals(user.getId()))) {
 			throw new IllegalArgumentException("작성자만 삭제할 수 있습니다.");
 		}
 
 		recipeRepository.delete(recipe);
 
 		return (recipeId + " 번 삭제 완료");
+	}
+
+	public Page<RecipeResponseDto> getAllRecipe(int page, String sortBy) {
+		Sort sort = Sort.by(Sort.Direction.DESC, sortBy); // 지금 AscDesc 안 정함, 내가 일단 해야하는 건 최신순 정렬
+		Pageable pageable = PageRequest.of(page, 10, sort);
+
+		Page<Recipe> recipeList = recipeRepository.findAll(pageable);
+
+		return recipeList.map(RecipeResponseDto::new);
 	}
 
 	public Recipe findById(Long recipeId) {
