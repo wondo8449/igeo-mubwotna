@@ -30,4 +30,13 @@ public class CommentController {
         return ResponseEntity.ok().body(commentService.getComment(recipeId));
     }
 
+    /* Update */
+    @PatchMapping("/{commentId}")
+    public CommentResponseDto updateComment (@PathVariable Long recipeId,
+                                             @PathVariable Long commentId,
+                                             @RequestBody CommentRequestDto requestDto) {
+        return commentService.UpdateComment(recipeId, commentId, requestDto);
+    }
+
+
 }

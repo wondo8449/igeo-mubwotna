@@ -8,9 +8,11 @@ import com.sparta.igeomubwotna.entity.User;
 import com.sparta.igeomubwotna.repository.CommentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -43,6 +45,21 @@ public class CommentService {
         return commentResponseDtoList;
     }
 
+    /* Update : 댓글 수정*/
+    @Transactional
+    public CommentResponseDto UpdateComment(Long recipeId, Long commentId, CommentRequestDto requestDto) {
+        Recipe recipe = recipeService.findRecipeById(recipeId);
+        Comment comment = findById(commentId);
+
+        if (!Objects.equals(comment.getUser().getUserId(), requestDto.getUserId())) {
+            throw new IllegalArgumentException("작성자만 수정할 수 있습니다.");
+        }
+
+        comment.update(requestDto.getContent());
+        return CommentResponseDto.toDto(comment);
+
+    }
+
 
     /* ID로 comment 찾기 */
     private Comment findById(Long commentId) {
@@ -50,5 +67,6 @@ public class CommentService {
                 new IllegalArgumentException("해당 댓글이 존재하지 않습니다.")
         );
     }
+
 
 }
