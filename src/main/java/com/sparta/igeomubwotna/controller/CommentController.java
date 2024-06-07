@@ -7,6 +7,8 @@ import com.sparta.igeomubwotna.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,11 +21,11 @@ public class CommentController {
     private final CommentService commentService;
 
     /* Create */
-    @PostMapping("/{userId}")
+    @PostMapping
     public CommentResponseDto createComment (@RequestBody CommentRequestDto requestDto,
                                              @PathVariable Long recipeId,
-                                             @PathVariable Long userId) {
-        return commentService.createComment(requestDto, recipeId, userId);
+                                             @AuthenticationPrincipal UserDetails userDetails) {
+        return commentService.createComment(requestDto, recipeId, userDetails.getUser().getuserId);
     }
 
     /* Read */

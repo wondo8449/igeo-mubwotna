@@ -51,6 +51,11 @@ public class CommentService {
         Recipe recipe = recipeService.findById(recipeId);
         Comment comment = findById(commentId);
 
+        // 예외처리
+        if (recipe.getId() != comment.getRecipe().getId()) {
+            throw new IllegalArgumentException("해당 게시글의 댓글이 아닙니다.");
+        }
+
         comment.update(requestDto.getContent());
         return CommentResponseDto.toDto(comment);
     }

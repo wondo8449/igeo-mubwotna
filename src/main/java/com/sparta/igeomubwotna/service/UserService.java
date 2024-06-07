@@ -2,6 +2,7 @@ package com.sparta.igeomubwotna.service;
 
 import com.sparta.igeomubwotna.dto.Response;
 import com.sparta.igeomubwotna.dto.SignupRequestDto;
+import com.sparta.igeomubwotna.entity.Recipe;
 import com.sparta.igeomubwotna.entity.User;
 import com.sparta.igeomubwotna.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -48,6 +49,12 @@ public class UserService {
         // 성공 메시지와 상태 코드 반환
         Response response = new Response(HttpStatus.OK.value(), "회원가입에 성공하였습니다.");
         return ResponseEntity.ok(response);
+    }
+
+    public User findById(Long recipeId) {
+        return userRepository.findById(recipeId).orElseThrow(() ->
+                new IllegalArgumentException("해당 댓글이 존재하지 않습니다.")
+        );
     }
 
 }
