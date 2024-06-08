@@ -7,6 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class LikeService {
@@ -25,18 +27,29 @@ public class LikeService {
         Recipe foundRecipe = recipeRepository.findById(recipeId).orElseThrow(
                 () -> new IllegalArgumentException("해당 레시피는 존재하지 않습니다."));
 
-        if (foundUser.getUserId() == foundRecipe.getUser().getUserId()) {
-            new IllegalArgumentException("자신이 작성한 레시피에는 좋아요를 남길 수 없습니다.");
+        if (foundUser.getUserId().equals(foundRecipe.getUser().getUserId())) {
+            throw new IllegalArgumentException("자신이 작성한 레시피에는 좋아요를 남길 수 없습니다.");
         }
 
         var RecipeLikes = new RecipeLikes(foundUser, foundRecipe);
 
-        if(recipeLikesRepository.findByUserAndRecipe(foundUser, foundRecipe).isPresent()) {
+        Optional<RecipeLikes> list = recipeLikesRepository.findByUserAndRecipe(foundUser, foundRecipe);
+
+        System.out.println(list);
+
+        if(!(recipeLikesRepository.findByUserAndRecipe(foundUser, foundRecipe).isEmpty())) {
             new IllegalArgumentException("이미 좋아요를 누른 레시피입니다.");
         }
-
+        System.out.println("들어옴3");
         recipeLikesRepository.save(RecipeLikes);
-
+        System.out.println("들어옴4");
+        if (foundRecipe.getRecipeLikes() == null) {
+            System.out.println("들어옴5");
+            foundRecipe.setRecipeLikes(1L);
+        } else {
+            foundRecipe.setRecipeLikes(foundRecipe.getRecipeLikes() + 1);
+        }
+        System.out.println("들어옴6");
         return ResponseEntity.status(200).body("좋아요 성공!");
     }
 
@@ -59,8 +72,8 @@ public class LikeService {
         Comment foundComment = commentRepository.findById(commentId).orElseThrow(
                 () -> new IllegalArgumentException("해당 댓글은 존재하지 않습니다."));
 
-        if (foundUser.getUserId() == foundComment.getUser().getUserId()) {
-            new IllegalArgumentException("자신이 작성한 댓글에는 좋아요를 남길 수 없습니다.");
+        if (foundUser.getUserId().equals(foundComment.getUser().getUserId())) {
+            throw new IllegalArgumentException("자신이 작성한 댓글에는 좋아요를 남길 수 없습니다.");
         }
 
         if(commentLikesRepository.findByUserAndComment(foundUser, foundComment).isPresent()) {
