@@ -38,7 +38,7 @@ public class LikeService {
         System.out.println(list);
 
         if(!(recipeLikesRepository.findByUserAndRecipe(foundUser, foundRecipe).isEmpty())) {
-            new IllegalArgumentException("이미 좋아요를 누른 레시피입니다.");
+            throw new IllegalArgumentException("이미 좋아요를 누른 레시피입니다.");
         }
         System.out.println("들어옴3");
         recipeLikesRepository.save(RecipeLikes);
@@ -77,7 +77,7 @@ public class LikeService {
         }
 
         if(commentLikesRepository.findByUserAndComment(foundUser, foundComment).isPresent()) {
-            new IllegalArgumentException("이미 좋아요를 누른 댓글입니다.");
+            throw new IllegalArgumentException("이미 좋아요를 누른 댓글입니다.");
         }
 
         var CommentLikes = new CommentLikes(foundUser, foundComment);
