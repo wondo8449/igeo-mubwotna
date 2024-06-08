@@ -1,5 +1,6 @@
 package com.sparta.igeomubwotna.service;
 
+import com.sparta.igeomubwotna.dto.PasswordDto;
 import com.sparta.igeomubwotna.dto.Response;
 import com.sparta.igeomubwotna.dto.SigninRequestDto;
 import com.sparta.igeomubwotna.dto.SignupRequestDto;
@@ -71,41 +72,6 @@ public class UserService {
         return ResponseEntity.ok(response);
     }
 
-    public ResponseEntity<Response> signin(@Valid SigninRequestDto requestDto, HttpServletResponse res, BindingResult bindingResult) {
-        ResponseEntity<Response> returnError = checkError("로그인에 실패하였습니다.", bindingResult);
-
-        if (returnError != null) {
-            return returnError;
-        }
-
-        String userId = requestDto.getUserId();
-        String password = requestDto.getPassword();
-
-        // 있는 회원인지 확인
-        Optional<User> user = userRepository.findByUserId(userId);
-
-        if (user.isPresent()) {
-            // 비밀번호 확인(평문, 암호화)
-            // password가 일치하지 않으면
-            if(!passwordEncoder.matches(password, user.get().getPassword())) {
-                // 오류 메시지와 상태 코드 반환
-                Response response = new Response(HttpStatus.BAD_REQUEST.value(), "비밀번호가 다릅니다.");
-
-                return ResponseEntity.badRequest().body(response);
-            }
-
-        } else {
-            // 오류 메시지와 상태 코드 반환
-            Response response = new Response(HttpStatus.BAD_REQUEST.value(), "아이디가 존재하지 않습니다.");
-
-            return ResponseEntity.badRequest().body(response);
-        }
-
-        Response response = new Response(HttpStatus.OK.value(), "로그인에 성공하였습니다.");
-
-        return ResponseEntity.ok().body(response);
-    }
-
     // 클라이언트에서 입력받아 오는 값을 유효성 검사하는 로직
     public ResponseEntity<Response> checkError(String message, BindingResult bindingResult) {
         // 유효성 검사 예외 처리
@@ -166,7 +132,32 @@ public class UserService {
         Response response = new Response(HttpStatus.OK.value(), "프로필 정보를 성공적으로 수정하였습니다.");
         return ResponseEntity.ok().body(response);
     }
+  
+    public ResponseEntity<Response> withdrawUser(PasswordDto passwordDto, Long userId) {
+        // ID로 사용자를 검색하고, 없으면 예외를 던짐
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 사용자를 찾을 수 없습니다."));
 
+        // 이미 탈퇴한 사용자인지 확인
+        if (user.isWithdrawn()) {
+            Response response = new Response(HttpStatus.BAD_REQUEST.value(), "이미 탈퇴한 사용자입니다.");
+            return ResponseEntity.badRequest().body(response);
+        }
+
+        // 입력받은 비밀번호를 인코딩하여 기존 비밀번호와 비교
+        if (!passwordEncoder.matches(passwordDto.getPassword(), user.getPassword())) {
+            Response response = new Response(HttpStatus.BAD_REQUEST.value(), "비밀번호가 일치하지 않습니다.");
+            return ResponseEntity.badRequest().body(response);
+        }
+
+        // 회원 탈퇴 처리
+        user.withdraw();
+        userRepository.save(user);
+
+        Response response = new Response(HttpStatus.OK.value(), "회원 탈퇴가 성공적으로 완료되었습니다.");
+        return ResponseEntity.ok().body(response);
+    }
+  
     public User findById(Long recipeId) {
         return userRepository.findById(recipeId).orElseThrow(() ->
                 new IllegalArgumentException("해당 사용자가 존재하지 않습니다.")

@@ -3,7 +3,6 @@ package com.sparta.igeomubwotna.jwt;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -11,9 +10,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
@@ -21,8 +17,9 @@ import java.util.Date;
 @Slf4j(topic = "JWT 관련 로그")
 @Component
 public class JwtUtil {
-    // Header KEY 값 (이름)
-    public static final String AUTHORIZATION_HEADER = "Authorization";
+    // AccessToken KEY 값 (이름)
+    public static final String ACCESS_HEADER = "Authorization";
+
     // 사용자 상태 값의 KEY (이름)
     public static final String AUTHORIZATION_KEY = "status";
     // Token 식별자
@@ -72,55 +69,66 @@ public class JwtUtil {
 
     }
 
-    // header 에서 JWT 가져오기
-    public String getJwtFromHeader(HttpServletRequest request) {
-        String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
-            return bearerToken.substring(7);
+    // AccessToken을 header에서 가져와서 반환하는 메서드
+    public String getAccessTokenFromHeader(HttpServletRequest request) {
+        String accessToken = request.getHeader(ACCESS_HEADER);
+        if (StringUtils.hasText(accessToken) && accessToken.startsWith(BEARER_PREFIX)) {
+            return accessToken.substring(BEARER_PREFIX.length());
         }
         return null;
     }
 
-    // 토큰 검증
-    public boolean validateToken(String token) {
+    // Access 토큰 검증
+    public boolean validateAccessToken(String accessToken, String refreshToken, HttpServletResponse response) {
         try {
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessToken);
             return true;
         } catch (SecurityException | MalformedJwtException | SignatureException e) {
-            log.error("Invalid JWT signature, 유효하지 않는 JWT 서명 입니다.");
+            log.error("Invalid AccessToken signature, 유효하지 않는 AccessToken 서명 입니다.");
         } catch (ExpiredJwtException e) {
-            log.error("Expired JWT token, 만료된 JWT token 입니다.");
+            refreshAccessToken(refreshToken, response);
+            log.error("Expired AccessToken token, 만료된 AccessToken 입니다.");
         } catch (UnsupportedJwtException e) {
-            log.error("Unsupported JWT token, 지원되지 않는 JWT 토큰 입니다.");
+            log.error("Unsupported AccessToken token, 지원되지 않는 AccessToken 입니다.");
         } catch (IllegalArgumentException e) {
-            log.error("JWT claims is empty, 잘못된 JWT 토큰 입니다.");
+            log.error("AccessToken claims is empty, 잘못된 AccessToken 토큰 입니다.");
         }
         return false;
+    }
+
+    // refresh 토큰 검증
+    public boolean validateRefreshToken(String refreshToken) {
+        try {
+            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(refreshToken);
+            return true;
+        } catch (SecurityException | MalformedJwtException | SignatureException e) {
+            log.error("Invalid RefreshToken, 유효하지 않는 RefreshToken 서명 입니다.");
+        } catch (ExpiredJwtException e) {
+            log.error("Expired RefreshToken, 만료된 RefreshToken 입니다. 다시 로그인 해주세요.");
+        } catch (UnsupportedJwtException e) {
+            log.error("Unsupported RefreshToken, 지원되지 않는 RefreshToken 입니다.");
+        } catch (IllegalArgumentException e) {
+            log.error("RefreshToken claims is empty, 잘못된 RefreshToken 입니다.");
+        }
+        return false;
+    }
+
+    // RefreshToken 검증 및 AccessToken 재발급
+    public String refreshAccessToken(String refreshToken, HttpServletResponse response) {
+        if (validateRefreshToken(refreshToken)) {
+            Claims claims = getUserInfoFromToken(refreshToken);
+            String userId = claims.getSubject();
+            String newToken = createAccessToken(userId);
+
+            response.setHeader(ACCESS_HEADER, newToken);
+
+            return newToken;
+        }
+        return null;
     }
 
     // 토큰에서 사용자 정보 가져오기
     public Claims getUserInfoFromToken(String token) {
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
-    }
-
-    // 요청 쿠키에서 토큰 추출
-    public String getTokenFromRequest(HttpServletRequest req) {
-        Cookie[] cookies = req.getCookies();
-        // 쿠키가 존재하면
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                // 쿠키 이름이 AUTHORIZATION_HEADER와 일치하는 경우
-                if (cookie.getName().equals(AUTHORIZATION_HEADER)) {
-                    try {
-                        // 쿠키 값을 URL 디코딩하여 반환 (UTF-8 인코딩 사용)
-                        // 코딩된 쿠키 값을 다시 원래 값으로 되돌림
-                        return URLDecoder.decode(cookie.getValue(), "UTF-8"); // Encode 되어 넘어간 value 다시 Decode
-                    } catch (UnsupportedEncodingException e) {
-                        return null;
-                    }
-                }
-            }
-        }
-        return null;
     }
 }
