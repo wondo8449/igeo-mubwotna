@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
@@ -131,6 +132,24 @@ public class UserService {
 
         Response response = new Response(HttpStatus.OK.value(), "프로필 정보를 성공적으로 수정하였습니다.");
         return ResponseEntity.ok().body(response);
+    }
+
+    public ResponseEntity<Response> logout(Long userId) {
+        // ID로 사용자를 검색하고, 없으면 예외를 던짐
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 사용자를 찾을 수 없습니다."));
+
+        // refreshToken 초기화
+        user.setRefreshToken(null);
+
+        // 사용자 정보 저장
+        userRepository.save(user);
+
+        // SecurityContextHolder 초기화
+        SecurityContextHolder.clearContext();
+
+        Response response = new Response(HttpStatus.OK.value(), "로그아웃이 완료되었습니다.");
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
   
     public ResponseEntity<Response> withdrawUser(PasswordDto passwordDto, Long userId) {
