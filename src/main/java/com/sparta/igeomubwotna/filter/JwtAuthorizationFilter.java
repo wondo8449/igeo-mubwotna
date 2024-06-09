@@ -1,6 +1,7 @@
 package com.sparta.igeomubwotna.filter;
 
 import com.sparta.igeomubwotna.jwt.JwtUtil;
+import com.sparta.igeomubwotna.repository.UserRepository;
 import com.sparta.igeomubwotna.security.UserDetailsServiceImpl;
 
 import io.jsonwebtoken.Claims;
@@ -24,10 +25,12 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
     private final UserDetailsServiceImpl userDetailsService;
+    private final UserRepository userRepository;
 
-    public JwtAuthorizationFilter(JwtUtil jwtUtil, UserDetailsServiceImpl userDetailsService) {
+    public JwtAuthorizationFilter(JwtUtil jwtUtil, UserDetailsServiceImpl userDetailsService, UserRepository userRepository) {
         this.jwtUtil = jwtUtil;
         this.userDetailsService = userDetailsService;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -39,18 +42,20 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             return; // 필터 체인을 빠져나갑니다.
         }
 
-        // HTTP 요청에서 JWT 토큰 추출
-        String tokenValue = jwtUtil.getAccessTokenFromHeader(req);
+        // HTTP 요청에서 Access 토큰 추출
+        String accessToken = jwtUtil.getAccessTokenFromHeader(req);
+        String userId = jwtUtil.getUserInfoFromToken(accessToken).getSubject();
+        // 유저 정보로 refreshToken 들고오기
+        String refreshToken = userRepository.findByUserId(userId).get().getRefreshToken();
 
-        if (StringUtils.hasText(tokenValue)) {
-            // JWT 토큰 유효성 검증
-            if (!jwtUtil.validateToken(tokenValue)) {
+        if (StringUtils.hasText(accessToken)) {
+            // Access 토큰 유효성 검증
+            if (!jwtUtil.validateAccessToken(accessToken, refreshToken, res)) {
                 // 유효하지 않은 토큰이면 에러 로깅 후 종료
-                log.error("Token Error");
                 return;
             }
             // JWT 토큰으로부터 사용자 정보(Claims) 추출
-            Claims info = jwtUtil.getUserInfoFromToken(tokenValue);
+            Claims info = jwtUtil.getUserInfoFromToken(accessToken);
 
             try {
                 // 사용자 인증 처리
@@ -70,8 +75,10 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     public void setAuthentication(String username) {
         // 빈 SecurityContext 생성
         SecurityContext context = SecurityContextHolder.createEmptyContext();
+
         // 사용자의 인증 객체 생성
         Authentication authentication = createAuthentication(username);
+
         // SecurityContext에 인증 객체 설정
         context.setAuthentication(authentication);
 

@@ -18,9 +18,7 @@ import java.util.Date;
 @Component
 public class JwtUtil {
     // AccessToken KEY 값 (이름)
-    public static final String ACCESS_HEADER = "ACCESS";
-    // AccessToken KEY 값 (이름)
-    public static final String REFRESH_HEADER = "REFRESH";
+    public static final String ACCESS_HEADER = "Authorization";
 
     // 사용자 상태 값의 KEY (이름)
     public static final String AUTHORIZATION_KEY = "status";
@@ -71,15 +69,6 @@ public class JwtUtil {
 
     }
 
-    // RefreshToken을 header에서 가져와서 반환하는 메서드
-    public String getRefreshTokenFromHeader(HttpServletRequest request) {
-        String refreshToken = request.getHeader(REFRESH_HEADER);
-        if (StringUtils.hasText(refreshToken) && !refreshToken.startsWith(BEARER_PREFIX)) {
-            return refreshToken;
-        }
-        return null;
-    }
-
     // AccessToken을 header에서 가져와서 반환하는 메서드
     public String getAccessTokenFromHeader(HttpServletRequest request) {
         String accessToken = request.getHeader(ACCESS_HEADER);
@@ -89,26 +78,44 @@ public class JwtUtil {
         return null;
     }
 
-    // 토큰 검증
-    public boolean validateToken(String token) {
+    // Access 토큰 검증
+    public boolean validateAccessToken(String accessToken, String refreshToken, HttpServletResponse response) {
         try {
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessToken);
             return true;
         } catch (SecurityException | MalformedJwtException | SignatureException e) {
-            log.error("Invalid JWT signature, 유효하지 않는 JWT 서명 입니다.");
+            log.error("Invalid AccessToken signature, 유효하지 않는 AccessToken 서명 입니다.");
         } catch (ExpiredJwtException e) {
-            log.error("Expired JWT token, 만료된 JWT token 입니다.");
+            refreshAccessToken(refreshToken, response);
+            log.error("Expired AccessToken token, 만료된 AccessToken 입니다.");
         } catch (UnsupportedJwtException e) {
-            log.error("Unsupported JWT token, 지원되지 않는 JWT 토큰 입니다.");
+            log.error("Unsupported AccessToken token, 지원되지 않는 AccessToken 입니다.");
         } catch (IllegalArgumentException e) {
-            log.error("JWT claims is empty, 잘못된 JWT 토큰 입니다.");
+            log.error("AccessToken claims is empty, 잘못된 AccessToken 토큰 입니다.");
+        }
+        return false;
+    }
+
+    // refresh 토큰 검증
+    public boolean validateRefreshToken(String refreshToken) {
+        try {
+            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(refreshToken);
+            return true;
+        } catch (SecurityException | MalformedJwtException | SignatureException e) {
+            log.error("Invalid RefreshToken, 유효하지 않는 RefreshToken 서명 입니다.");
+        } catch (ExpiredJwtException e) {
+            log.error("Expired RefreshToken, 만료된 RefreshToken 입니다. 다시 로그인 해주세요.");
+        } catch (UnsupportedJwtException e) {
+            log.error("Unsupported RefreshToken, 지원되지 않는 RefreshToken 입니다.");
+        } catch (IllegalArgumentException e) {
+            log.error("RefreshToken claims is empty, 잘못된 RefreshToken 입니다.");
         }
         return false;
     }
 
     // RefreshToken 검증 및 AccessToken 재발급
     public String refreshAccessToken(String refreshToken, HttpServletResponse response) {
-        if (validateToken(refreshToken)) {
+        if (validateRefreshToken(refreshToken)) {
             Claims claims = getUserInfoFromToken(refreshToken);
             String userId = claims.getSubject();
             String newToken = createAccessToken(userId);
@@ -117,7 +124,6 @@ public class JwtUtil {
 
             return newToken;
         }
-        // TODO: 반환값이 null 값이 나오면 refreshToken도 문제가 있으니 새로 로그인 하라고 해야합니다!
         return null;
     }
 
