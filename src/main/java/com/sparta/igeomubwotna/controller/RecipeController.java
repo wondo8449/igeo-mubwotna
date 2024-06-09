@@ -76,5 +76,12 @@ public class RecipeController {
 		return recipeService.getAllRecipe(page-1, sortBy);
 	}
 
+	// 기간별 검색 - api 중복 안 됨
+	@GetMapping("/date/")
+	public ResponseEntity getDateRecipe(@RequestParam("page") int page,
+		@RequestParam("startdate") String startDate,
+		@RequestParam("enddate") String endDate) {
+		return recipeService.getDateRecipe(page-1, startDate, endDate);
+	}
 
 }
