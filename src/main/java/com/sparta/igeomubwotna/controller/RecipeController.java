@@ -71,11 +71,9 @@ public class RecipeController {
 
 
 	@GetMapping("/")
-	public ResponseEntity<Page<RecipeResponseDto>> getAllRecipe(@RequestParam("page") int page,
-		@RequestParam("size") int size,
+	public ResponseEntity getAllRecipe(@RequestParam("page") int page,
 		@RequestParam("sortBy") String sortBy) {
-		return ResponseEntity.status(HttpStatus.OK).body(recipeService.getAllRecipe(page-1, sortBy));
-
+		return recipeService.getAllRecipe(page-1, sortBy);
 	}
 
 
