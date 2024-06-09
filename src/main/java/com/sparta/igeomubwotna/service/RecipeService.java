@@ -5,6 +5,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,7 +25,7 @@ public class RecipeService {
 
 
 	private final RecipeRepository recipeRepository;
-	private final LikeService likeService;
+	// private final LikeService likeService;
 
 	@Transactional
 	public RecipeResponseDto saveRecipe(RecipeRequestDto requestDto, User user) {
@@ -33,7 +35,7 @@ public class RecipeService {
 
 	public RecipeResponseDto getRecipe(Long recipeId) {
 		Recipe recipe = findById(recipeId);
-		recipe.setRecipeLikes(likeService.getLike(recipe));
+		// recipe.setRecipeLikes(likeService.getLike(recipe));
 		return new RecipeResponseDto(recipe);
 	}
 
@@ -64,13 +66,17 @@ public class RecipeService {
 		return (recipeId + " 번 삭제 완료");
 	}
 
-	public Page<RecipeResponseDto> getAllRecipe(int page, String sortBy) {
-		Sort sort = Sort.by(Sort.Direction.DESC, sortBy); // 지금 AscDesc 안 정함, 내가 일단 해야하는 건 최신순 정렬
+	public ResponseEntity getAllRecipe(int page, String sortBy) {
+		Sort sort = Sort.by(Sort.Direction.DESC, sortBy);
 		Pageable pageable = PageRequest.of(page, 10, sort);
 
 		Page<Recipe> recipeList = recipeRepository.findAll(pageable);
 
-		return recipeList.map(RecipeResponseDto::new);
+		if (recipeList.getTotalElements() == 0) {
+			return ResponseEntity.status(HttpStatus.OK).body("먼저 작성하여 소식을 알려보세요!");
+		}
+
+		return ResponseEntity.status(HttpStatus.OK).body(recipeList.map(RecipeResponseDto::new));
 	}
 
 	public Recipe findById(Long recipeId) {
