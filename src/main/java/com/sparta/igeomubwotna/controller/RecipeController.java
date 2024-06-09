@@ -72,7 +72,7 @@ public class RecipeController {
 
 	@GetMapping("/")
 	public ResponseEntity getAllRecipe(@RequestParam("page") int page,
-		@RequestParam("sortBy") String sortBy) {
+		@RequestParam(required = false, defaultValue="createdAt", value ="sortBy") String sortBy) {
 		return recipeService.getAllRecipe(page-1, sortBy);
 	}
 

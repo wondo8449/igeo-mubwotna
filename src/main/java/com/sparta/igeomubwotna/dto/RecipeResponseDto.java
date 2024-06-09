@@ -11,6 +11,7 @@ public class RecipeResponseDto {
 	String title;
 	String content;
 	String userId;
+	Long recipeLikes;
 	LocalDateTime createdAt;
 	LocalDateTime modifiedAt;
 
@@ -18,6 +19,7 @@ public class RecipeResponseDto {
 		this.title = recipe.getTitle();
 		this.content = recipe.getContent();
 		this.userId = recipe.getUser().getUserId();
+		this.recipeLikes = recipe.getRecipeLikes();
 		this.createdAt = recipe.getCreatedAt();
 		this.modifiedAt = recipe.getModifiedAt();
 	}

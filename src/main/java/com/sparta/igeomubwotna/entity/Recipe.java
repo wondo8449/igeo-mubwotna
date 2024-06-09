@@ -38,7 +38,7 @@ public class Recipe extends Timestamped{
 	private String content;
 
 	@Column
-	private Long recipeLikes;
+	private Long recipeLikes = 0L;
 
 	public Recipe(RecipeRequestDto requestDto, User user) {
 		this.title = requestDto.getTitle();
