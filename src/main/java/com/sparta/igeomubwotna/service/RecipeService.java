@@ -1,6 +1,10 @@
 package com.sparta.igeomubwotna.service;
 
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -25,7 +29,6 @@ public class RecipeService {
 
 
 	private final RecipeRepository recipeRepository;
-	// private final LikeService likeService;
 
 	@Transactional
 	public RecipeResponseDto saveRecipe(RecipeRequestDto requestDto, User user) {
@@ -35,7 +38,6 @@ public class RecipeService {
 
 	public RecipeResponseDto getRecipe(Long recipeId) {
 		Recipe recipe = findById(recipeId);
-		// recipe.setRecipeLikes(likeService.getLike(recipe));
 		return new RecipeResponseDto(recipe);
 	}
 
@@ -53,6 +55,7 @@ public class RecipeService {
 
 	}
 
+	@Transactional
 	public String deleteRecipe(Long recipeId, User user) {
 		Recipe recipe = findById(recipeId);
 
@@ -71,6 +74,23 @@ public class RecipeService {
 		Pageable pageable = PageRequest.of(page, 10, sort);
 
 		Page<Recipe> recipeList = recipeRepository.findAll(pageable);
+
+		if (recipeList.getTotalElements() == 0) {
+			return ResponseEntity.status(HttpStatus.OK).body("먼저 작성하여 소식을 알려보세요!");
+		}
+
+		return ResponseEntity.status(HttpStatus.OK).body(recipeList.map(RecipeResponseDto::new));
+	}
+
+	public ResponseEntity getDateRecipe(int page, String startDate, String endDate) {
+
+		LocalDateTime startDateTime = LocalDate.parse(startDate, DateTimeFormatter.ofPattern("yyyyMMdd")).atTime(0, 0, 0);
+		LocalDateTime endDateTime = LocalDate.parse(endDate, DateTimeFormatter.ofPattern("yyyyMMdd")).atTime(23, 59, 59);
+
+		Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
+		Pageable pageable = PageRequest.of(page, 10, sort);
+
+		Page<Recipe> recipeList = recipeRepository.findAllByCreatedAtBetween(pageable, startDateTime, endDateTime);
 
 		if (recipeList.getTotalElements() == 0) {
 			return ResponseEntity.status(HttpStatus.OK).body("먼저 작성하여 소식을 알려보세요!");
