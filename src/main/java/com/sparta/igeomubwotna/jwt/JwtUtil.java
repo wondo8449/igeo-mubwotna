@@ -20,8 +20,8 @@ public class JwtUtil {
     // AccessToken KEY 값 (이름)
     public static final String ACCESS_HEADER = "Authorization";
 
-    // 사용자 상태 값의 KEY (이름)
-    public static final String AUTHORIZATION_KEY = "status";
+    // 사용자 아이디 값의 KEY (이름)
+    public static final String ACCESS_USERID = "X-User-Id";
     // Token 식별자
     public static final String BEARER_PREFIX = "Bearer ";
     // 토큰 만료시간
@@ -74,6 +74,16 @@ public class JwtUtil {
         String accessToken = request.getHeader(ACCESS_HEADER);
         if (StringUtils.hasText(accessToken) && accessToken.startsWith(BEARER_PREFIX)) {
             return accessToken.substring(BEARER_PREFIX.length());
+        }
+        return null;
+    }
+
+    // UserId를 header에서 가져와서 반환하는 메서드
+    public String getUserIdFromHeader(HttpServletRequest request) {
+        String userId = request.getHeader(ACCESS_USERID);
+
+        if(StringUtils.hasText(userId)) {
+            return userId;
         }
         return null;
     }
