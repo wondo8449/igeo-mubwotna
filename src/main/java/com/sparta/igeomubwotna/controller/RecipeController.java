@@ -35,7 +35,7 @@ public class RecipeController {
 	private final RecipeService recipeService;
 
 	@PostMapping("/")
-	public ResponseEntity<RecipeResponseDto> createRecipe(@Valid @RequestBody RecipeRequestDto requestDto,
+	public ResponseEntity saveRecipe(@Valid @RequestBody RecipeRequestDto requestDto,
 		BindingResult bindingResult,
 		@AuthenticationPrincipal UserDetailsImpl userDetails) {
 
@@ -45,26 +45,26 @@ public class RecipeController {
 				log.error(fieldError.getField() + " 필드 : " + fieldError.getDefaultMessage());
 			}
 		}
-		return ResponseEntity.status(HttpStatus.CREATED).body(recipeService.saveRecipe(requestDto, userDetails.getUser()));
+		return recipeService.saveRecipe(requestDto, userDetails.getUser());
 
 	}
 
 	@GetMapping("/{recipeId}")
-	public ResponseEntity<RecipeResponseDto> getRecipe(@PathVariable Long recipeId) {
-		return ResponseEntity.status(HttpStatus.OK).body(recipeService.getRecipe(recipeId));
+	public ResponseEntity getRecipe(@PathVariable Long recipeId) {
+		return recipeService.getRecipe(recipeId);
 	}
 
 	@PatchMapping("/{recipeId}")
 	public ResponseEntity<RecipeResponseDto> editRecipe(@PathVariable Long recipeId,
 		@RequestBody RecipeRequestDto requestDto,
 		@AuthenticationPrincipal UserDetailsImpl userDetails) {
-		return ResponseEntity.status(HttpStatus.OK).body(recipeService.editRecipe(recipeId, requestDto, userDetails.getUser()));
+		return recipeService.editRecipe(recipeId, requestDto, userDetails.getUser());
 	}
 
 	@DeleteMapping("/{recipeId}")
 	public ResponseEntity deleteRecipe(@PathVariable Long recipeId,
 		@AuthenticationPrincipal UserDetailsImpl userDetails) {
-		return ResponseEntity.status(HttpStatus.OK).body(recipeService.deleteRecipe(recipeId, userDetails.getUser()));
+		return recipeService.deleteRecipe(recipeId, userDetails.getUser());
 	}
 
 	@GetMapping("/")
@@ -73,7 +73,6 @@ public class RecipeController {
 		return recipeService.getAllRecipe(page-1, sortBy);
 	}
 
-	// 기간별 검색 - api 중복 안 됨
 	@GetMapping("/date/")
 	public ResponseEntity getDateRecipe(@RequestParam("page") int page,
 		@RequestParam("startdate") String startDate,
