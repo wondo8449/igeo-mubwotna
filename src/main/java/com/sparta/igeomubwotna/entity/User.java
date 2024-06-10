@@ -75,7 +75,7 @@ public class User extends Timestamped {
         this.password = password;
     }
 
- 
+
     public void setRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
     }

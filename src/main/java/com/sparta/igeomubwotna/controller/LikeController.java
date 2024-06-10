@@ -15,7 +15,6 @@ public class LikeController {
     private final LikeService likeService;
 
     @PostMapping("/recipe/{recipeId}")
-    @GetMapping("/recipe/{recipeId}")
     public ResponseEntity addRecipeLike(@PathVariable Long recipeId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return likeService.addRecipeLike(recipeId, userDetails.getUser());
     }
@@ -26,7 +25,6 @@ public class LikeController {
     }
 
     @PostMapping("/comment/{commentId}")
-    @GetMapping("/comment/{commentId}")
     public ResponseEntity addCommentLike(@PathVariable Long commentId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return likeService.addCommentLike(commentId, userDetails.getUser());
     }
