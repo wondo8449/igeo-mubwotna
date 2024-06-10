@@ -20,8 +20,8 @@ public class LikeController {
     }
 
     @DeleteMapping("/recipe/{recipeLikeId}")
-    public ResponseEntity removeRecipeLike(@PathVariable Long recipeLikeId) {
-        return likeService.removeRecipeLike(recipeLikeId);
+    public ResponseEntity removeRecipeLike(@PathVariable Long recipeLikeId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return likeService.removeRecipeLike(recipeLikeId, userDetails.getUser());
     }
 
     @PostMapping("/comment/{commentId}")
@@ -30,7 +30,7 @@ public class LikeController {
     }
 
     @DeleteMapping("/comment/{commentId}")
-    public ResponseEntity removeCommentLike(@PathVariable Long commentId) {
-        return likeService.removeCommentLike(commentId);
+    public ResponseEntity removeCommentLike(@PathVariable Long commentId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return likeService.removeCommentLike(commentId, userDetails.getUser());
     }
 }
