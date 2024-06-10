@@ -53,6 +53,13 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String userId = ((UserDetailsImpl) authResult.getPrincipal()).getUsername();
 //        UserRoleEnum role = ((UserDetailsImpl) authResult.getPrincipal()).getUser().getRole();
 
+        if (userRepository.findByUserId(userId).get().isWithdrawn()) {
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().write("이미 탈퇴한 회원입니다.");  // 탈퇴한 사용자는 로그인 못함
+
+            return;
+        }
+
         // AccessToken 생성
         String accessToken = jwtUtil.createAccessToken(userId);
         // 응답 헤더에 AccessToken 추가

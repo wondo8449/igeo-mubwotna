@@ -36,6 +36,11 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain filterChain) throws ServletException, IOException {
         String url = req.getRequestURI();
 
+        if (StringUtils.hasText(url) && (url.equals("/user/signin") || url.equals("/user/signup"))) {
+            filterChain.doFilter(req, res);
+            return; // 필터 체인을 빠져나갑니다.
+        }
+
         // HTTP 요청에서 UserId 추출
         String userId = jwtUtil.getUserIdFromHeader(req);
 
@@ -44,11 +49,6 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             res.getWriter().write("이미 탈퇴한 회원입니다.");  // 탈퇴한 사용자는 로그인 못함
 
             return;
-        }
-
-        if (StringUtils.hasText(url) && (url.equals("/user/signin") || url.equals("/user/signup"))) {
-            filterChain.doFilter(req, res);
-            return; // 필터 체인을 빠져나갑니다.
         }
 
         // HTTP 요청에서 Access 토큰 추출
