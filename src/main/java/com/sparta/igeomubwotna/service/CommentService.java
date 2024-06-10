@@ -23,9 +23,8 @@ public class CommentService {
     private final UserService userService;
 
     /* Create : 댓글 작성 */
-    public ResponseEntity createComment(CommentRequestDto requestDto, Long recipeId, Long userId) {
+    public ResponseEntity createComment(CommentRequestDto requestDto, Long recipeId, User user) {
         Recipe recipe = recipeService.findById(recipeId);
-        User user = userService.findById(userId);
         Comment comment = new Comment(requestDto, recipe, user);
 
         commentRepository.save(comment);
