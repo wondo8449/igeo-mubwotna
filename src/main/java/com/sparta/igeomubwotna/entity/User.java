@@ -63,20 +63,21 @@ public class User extends Timestamped {
         this.status = UserStatusEnum.ACTIVE;
     }
 
-    public void setName(String name) {
+
+    public void updateName(String name) {
         this.name = name;
     }
 
-    public void setDescription(String description) {
+    public void updateDescription(String description) {
         this.description = description;
     }
 
-    public void setPassword(String password) {
+    public void updatePassword(String password) {
         this.password = password;
     }
 
 
-    public void setRefreshToken(String refreshToken) {
+    public void updateRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
     }
 
