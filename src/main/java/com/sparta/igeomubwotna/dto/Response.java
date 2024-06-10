@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 
 import java.util.List;
+
 @Getter
 public class Response {
     private int statusCode;

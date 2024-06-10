@@ -1,16 +1,8 @@
 package com.sparta.igeomubwotna.service;
 
-import com.sparta.igeomubwotna.dto.PasswordDto;
-import com.sparta.igeomubwotna.dto.Response;
-import com.sparta.igeomubwotna.dto.SigninRequestDto;
-import com.sparta.igeomubwotna.dto.SignupRequestDto;
-import com.sparta.igeomubwotna.dto.UserProfileDto;
-import com.sparta.igeomubwotna.dto.UserUpdateRequestDto;
+import com.sparta.igeomubwotna.dto.*;
 import com.sparta.igeomubwotna.entity.User;
-import com.sparta.igeomubwotna.jwt.JwtUtil;
 import com.sparta.igeomubwotna.repository.UserRepository;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -18,9 +10,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
@@ -33,7 +25,6 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JwtUtil jwtUtil;
 
     public ResponseEntity<Response> signup(SignupRequestDto requestDto, BindingResult bindingResult) {
         ResponseEntity<Response> returnError = checkError("회원가입에 실패하였습니다.", bindingResult);
@@ -93,12 +84,12 @@ public class UserService {
 
         return null;
     }
-  
+
     @Transactional(readOnly = true)
     public UserProfileDto getUserProfile(Long userId) {
         // ID로 사용자를 검색하고, 없으면 예외를 던짐
         User user = userRepository.findById(userId)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 사용자의 프로필을 찾을 수 없습니다."));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 사용자의 프로필을 찾을 수 없습니다."));
         return new UserProfileDto(user);
     }
 
@@ -106,7 +97,7 @@ public class UserService {
     public ResponseEntity<Response> updateUserProfile(UserUpdateRequestDto requestDto, Long userId) {
         // ID로 사용자를 검색하고, 없으면 예외를 던짐
         User user = userRepository.findById(userId)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 사용자의 프로필을 찾을 수 없습니다."));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 사용자의 프로필을 찾을 수 없습니다."));
 
         if (requestDto.getName() != null) {
             user.setName(requestDto.getName());
@@ -137,7 +128,7 @@ public class UserService {
     public ResponseEntity<Response> logout(Long userId) {
         // ID로 사용자를 검색하고, 없으면 예외를 던짐
         User user = userRepository.findById(userId)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 사용자를 찾을 수 없습니다."));
 
         // refreshToken 초기화
         user.setRefreshToken(null);
@@ -151,11 +142,11 @@ public class UserService {
         Response response = new Response(HttpStatus.OK.value(), "로그아웃이 완료되었습니다.");
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
-  
+
     public ResponseEntity<Response> withdrawUser(PasswordDto passwordDto, Long userId) {
         // ID로 사용자를 검색하고, 없으면 예외를 던짐
         User user = userRepository.findById(userId)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 사용자를 찾을 수 없습니다."));
 
         // 이미 탈퇴한 사용자인지 확인
         if (user.isWithdrawn()) {
@@ -176,7 +167,7 @@ public class UserService {
         Response response = new Response(HttpStatus.OK.value(), "회원 탈퇴가 성공적으로 완료되었습니다.");
         return ResponseEntity.ok().body(response);
     }
-  
+
     public User findById(Long recipeId) {
         return userRepository.findById(recipeId).orElseThrow(() ->
                 new IllegalArgumentException("해당 사용자가 존재하지 않습니다.")

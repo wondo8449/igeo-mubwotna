@@ -3,7 +3,6 @@ package com.sparta.igeomubwotna.filter;
 import com.sparta.igeomubwotna.jwt.JwtUtil;
 import com.sparta.igeomubwotna.repository.UserRepository;
 import com.sparta.igeomubwotna.security.UserDetailsServiceImpl;
-
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

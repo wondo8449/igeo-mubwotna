@@ -82,7 +82,7 @@ public class JwtUtil {
     public String getUserIdFromHeader(HttpServletRequest request) {
         String userId = request.getHeader(ACCESS_USERID);
 
-        if(StringUtils.hasText(userId)) {
+        if (StringUtils.hasText(userId)) {
             return userId;
         }
         return null;

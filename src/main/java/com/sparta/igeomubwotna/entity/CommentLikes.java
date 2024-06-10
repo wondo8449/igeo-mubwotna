@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Table
 @NoArgsConstructor
-public class CommentLikes extends Timestamped{
+public class CommentLikes extends Timestamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

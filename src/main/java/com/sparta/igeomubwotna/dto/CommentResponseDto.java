@@ -29,6 +29,6 @@ public class CommentResponseDto {
                 comment.getUser().getUserId(),
                 comment.getCreatedAt(),
                 comment.getLikeCount()
-                );
+        );
     }
 }
