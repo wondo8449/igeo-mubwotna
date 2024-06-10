@@ -59,7 +59,7 @@
 
 <br>
 
-*✔️ 필수 기능 / ➕ 추가 기능*
+*✔ 필수 기능 / ➕ 추가 기능*
 <br>
 * 사용자 인증 기능
 
@@ -150,6 +150,8 @@
 > <img src="https://velog.velcdn.com/images/wondo8449/post/a3f96108-e9dc-4497-be32-08dc6d3a86c2/image.png" width="500px">
 
 ## 😫 트러블 슈팅
+> <img src="https://file.notion.so/f/f/83c75a39-3aba-4ba4-a792-7aefe4b07895/312c2eb2-7b77-42f5-8668-ea2c0fa471d4/Untitled.png?id=c231be88-dd98-4376-b22e-f55097f5b8ab&table=block&spaceId=83c75a39-3aba-4ba4-a792-7aefe4b07895&expirationTimestamp=1718114400000&signature=Hn_dCFF0Tb9SLUK_jWfg_3vgSRiZypzITUW8UQ3g_8I&downloadName=Untitled.png" width="500px">
+> <img src="https://file.notion.so/f/f/83c75a39-3aba-4ba4-a792-7aefe4b07895/35c5c602-e1cb-4594-8415-169dc18b587a/Untitled.png?id=a22aa717-75f2-4052-8caa-73cea4d2efeb&table=block&spaceId=83c75a39-3aba-4ba4-a792-7aefe4b07895&expirationTimestamp=1718114400000&signature=qht7j9KFCOiZTuv3C8TVy85xNSczF83UzqewuWsajmA&downloadName=Untitled.png" width="500px">
 
 ## 🙌 프로젝트 후기
 #### 🤡 이창형
