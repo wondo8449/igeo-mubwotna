@@ -51,6 +51,12 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         // 유저 정보로 refreshToken 들고오기
         String refreshToken = userRepository.findByUserId(userId).get().getRefreshToken();
 
+        if (refreshToken == null) {
+            res.setCharacterEncoding("UTF-8");
+            res.getWriter().write("다시 로그인해주세요.");  //로그아웃하여 Refresh Token이 초기화되었으므로 재로그인 유도
+            return;
+        }
+
         if (StringUtils.hasText(accessToken)) {
             // Access 토큰 유효성 검증
             if (!jwtUtil.validateAccessToken(accessToken, refreshToken, res)) {
