@@ -37,7 +37,7 @@ public class LikeService {
 
         System.out.println(list);
 
-        if(!(recipeLikesRepository.findByUserAndRecipe(foundUser, foundRecipe).isEmpty())) {
+        if(recipeLikesRepository.findByUserAndRecipe(foundUser, foundRecipe).isPresent()) {
             throw new IllegalArgumentException("이미 좋아요를 누른 레시피입니다.");
         }
         System.out.println("들어옴3");
@@ -54,7 +54,7 @@ public class LikeService {
     }
 
     @Transactional
-    public ResponseEntity removeRecipeLike(Long recipeLikeId, User user) {
+    public ResponseEntity removeRecipeLike(Long recipeLikeId) {
 
         RecipeLikes foundlike = recipeLikesRepository.findById(recipeLikeId).orElseThrow(
                 () -> new IllegalArgumentException("해당 좋아요가 존재하지 않습니다."));
@@ -91,7 +91,7 @@ public class LikeService {
     }
 
     @Transactional
-    public ResponseEntity removeCommentLike(Long commentId, User user) {
+    public ResponseEntity removeCommentLike(Long commentId) {
 
         CommentLikes foundLike = commentLikesRepository.findById(commentId).orElseThrow(
                 () -> new IllegalArgumentException("해당 좋아요가 존재하지 않습니다."));
