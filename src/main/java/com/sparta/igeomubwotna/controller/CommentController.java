@@ -36,11 +36,11 @@ public class CommentController {
 
     /* Update */
     @PatchMapping("/{commentId}")
-    public CommentResponseDto updateComment(@PathVariable Long recipeId,
-                                            @PathVariable Long commentId,
-                                            @RequestBody CommentRequestDto requestDto,
-                                            @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return commentService.updateComment(recipeId, commentId, requestDto, userDetails.getUser());
+    public ResponseEntity updateComment(@PathVariable Long recipeId,
+                                        @PathVariable Long commentId,
+                                        @RequestBody CommentRequestDto requestDto,
+                                        @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ResponseEntity.ok().body(commentService.updateComment(recipeId, commentId, requestDto, userDetails.getUser()));
     }
 
     /* Delete */

@@ -45,14 +45,14 @@ public class CommentService {
 
     /* Update : 댓글 수정 */
     @Transactional
-    public CommentResponseDto updateComment(Long recipeId, Long commentId, CommentRequestDto requestDto, User user) {
+    public ResponseEntity updateComment(Long recipeId, Long commentId, CommentRequestDto requestDto, User user) {
         Recipe recipe = recipeService.findById(recipeId);
         Comment comment = findById(commentId);
 
         checkUser(user, comment, recipe);
 
         comment.update(requestDto.getContent());
-        return CommentResponseDto.toDto(comment);
+        return ResponseEntity.ok("comment가 수정되었습니다.");
     }
 
     /* Delete : 댓글 삭제 */
