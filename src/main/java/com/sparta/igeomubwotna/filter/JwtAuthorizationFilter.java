@@ -48,6 +48,15 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
         Optional<User> userOptional = userRepository.findByUserId(userId);
 
+        // 사용자가 존재하지 않는 경우 또는 사용자가 탈퇴한 경우 처리
+        if (userOptional.isEmpty() || userOptional.get().isWithdrawn()) {
+            if (url.startsWith("/api")) { // API 요청인 경우에만 응답을 보냄
+                res.setCharacterEncoding("UTF-8");
+                res.getWriter().write("이미 탈퇴한 회원이거나 존재하지 않는 회원입니다.");  // 탈퇴한 사용자 또는 존재하지 않는 사용자는 로그인 못함
+                return;
+            }
+        }
+
         // HTTP 요청에서 Access 토큰 추출
         String accessToken = jwtUtil.getAccessTokenFromHeader(req);
 
