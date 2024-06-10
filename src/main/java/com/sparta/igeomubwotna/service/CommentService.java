@@ -23,9 +23,8 @@ public class CommentService {
     private final UserService userService;
 
     /* Create : 댓글 작성 */
-    public ResponseEntity createComment(CommentRequestDto requestDto, Long recipeId, Long userId) {
+    public ResponseEntity createComment(CommentRequestDto requestDto, Long recipeId, User user) {
         Recipe recipe = recipeService.findById(recipeId);
-        User user = userService.findById(userId);
         Comment comment = new Comment(requestDto, recipe, user);
 
         commentRepository.save(comment);
@@ -46,20 +45,14 @@ public class CommentService {
 
     /* Update : 댓글 수정 */
     @Transactional
-    public CommentResponseDto updateComment(Long recipeId, Long commentId, CommentRequestDto requestDto, User user) {
+    public ResponseEntity updateComment(Long recipeId, Long commentId, CommentRequestDto requestDto, User user) {
         Recipe recipe = recipeService.findById(recipeId);
         Comment comment = findById(commentId);
 
-        // 예외처리
-        if (recipe.getId() != comment.getRecipe().getId()) { // 게시글과 댓글의 관계가 없을 경우
-            throw new IllegalArgumentException("해당 게시글의 댓글이 아닙니다.");
-        }
-        if (!(comment.getUser().getId().equals(user.getId()))) { // User가 다른 경우
-            throw new IllegalArgumentException("작성자만 수정할 수 있습니다.");
-        }
+        checkUser(user, comment, recipe);
 
         comment.update(requestDto.getContent());
-        return CommentResponseDto.toDto(comment);
+        return ResponseEntity.ok("comment가 수정되었습니다.");
     }
 
     /* Delete : 댓글 삭제 */
@@ -67,13 +60,7 @@ public class CommentService {
         Recipe recipe = recipeService.findById(recipeId);
         Comment comment = findById(commentId);
 
-        // 예외처리
-        if (recipe.getId() != comment.getRecipe().getId()) { // 게시글과 댓글의 관계가 없을 경우
-            throw new IllegalArgumentException("해당 게시글의 댓글이 아닙니다.");
-        }
-        if (!(comment.getUser().getId().equals(user.getId()))) { // User가 다른 경우
-            throw new IllegalArgumentException("작성자만 삭제할 수 있습니다.");
-        }
+        checkUser(user, comment, recipe);
 
         commentRepository.delete(comment);
     }
@@ -84,5 +71,17 @@ public class CommentService {
         return commentRepository.findById(commentId).orElseThrow(() ->
                 new IllegalArgumentException("해당 댓글이 존재하지 않습니다.")
         );
+    }
+
+    /* 예외처리 */
+    private void checkUser(User user, Comment comment, Recipe recipe) {
+        // 게시글과 댓글의 관계가 없을 경우
+        if (recipe.getId() != comment.getRecipe().getId()) {
+            throw new IllegalArgumentException("해당 게시글의 댓글이 아닙니다.");
+        }
+        // User가 다른 경우
+        if (!(comment.getUser().getId().equals(user.getId()))) {
+            throw new IllegalArgumentException("작성자만 삭제할 수 있습니다.");
+        }
     }
 }

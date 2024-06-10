@@ -25,7 +25,7 @@ public class CommentController {
     public ResponseEntity createComment(@RequestBody CommentRequestDto requestDto,
                                         @PathVariable Long recipeId,
                                         @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return commentService.createComment(requestDto, recipeId, userDetails.getUser().getId());
+        return commentService.createComment(requestDto, recipeId, userDetails.getUser());
     }
 
     /* Read */
@@ -36,11 +36,11 @@ public class CommentController {
 
     /* Update */
     @PatchMapping("/{commentId}")
-    public CommentResponseDto updateComment(@PathVariable Long recipeId,
-                                            @PathVariable Long commentId,
-                                            @RequestBody CommentRequestDto requestDto,
-                                            @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return commentService.updateComment(recipeId, commentId, requestDto, userDetails.getUser());
+    public ResponseEntity updateComment(@PathVariable Long recipeId,
+                                        @PathVariable Long commentId,
+                                        @RequestBody CommentRequestDto requestDto,
+                                        @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return (commentService.updateComment(recipeId, commentId, requestDto, userDetails.getUser()));
     }
 
     /* Delete */
@@ -53,5 +53,4 @@ public class CommentController {
         Response response = new Response(HttpStatus.OK.value(), "댓글이 삭제되었습니다");
         return ResponseEntity.ok().body(response);
     }
-
 }
