@@ -13,11 +13,9 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @Getter
-@Setter
 @Table(name = "recipe")
 @NoArgsConstructor
 public class Recipe extends Timestamped{

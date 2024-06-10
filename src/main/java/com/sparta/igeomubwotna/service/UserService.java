@@ -26,6 +26,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
+    @Transactional
     public ResponseEntity<Response> signup(SignupRequestDto requestDto, BindingResult bindingResult) {
         ResponseEntity<Response> returnError = checkError("회원가입에 실패하였습니다.", bindingResult);
 
@@ -125,6 +126,7 @@ public class UserService {
         return ResponseEntity.ok().body(response);
     }
 
+    @Transactional
     public ResponseEntity<Response> logout(Long userId) {
         // ID로 사용자를 검색하고, 없으면 예외를 던짐
         User user = userRepository.findById(userId)
@@ -143,6 +145,7 @@ public class UserService {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @Transactional
     public ResponseEntity<Response> withdrawUser(PasswordDto passwordDto, Long userId) {
         // ID로 사용자를 검색하고, 없으면 예외를 던짐
         User user = userRepository.findById(userId)
