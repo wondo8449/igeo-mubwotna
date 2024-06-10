@@ -38,10 +38,19 @@ public class Comment extends Timestamped {
     @JoinColumn(name = "recipe_id")
     private Recipe recipe;
 
+    public void addLike() {
+        this.likeCount = likeCount + 1L;
+    }
+
+    public void minusLike() {
+        this.likeCount = likeCount - 1L;
+    }
+
     /* Constructor */
     public Comment(CommentRequestDto requestDto, Recipe recipe, User user) {
         this.content = requestDto.getContent();
         this.recipe = recipe;
+        this.likeCount = 0L;
         this.user = user;
     }
 
