@@ -65,6 +65,7 @@ public class LikeService {
         return ResponseEntity.status(200).body("좋아요 취소 성공!");
     }
 
+    @Transactional
     public ResponseEntity addCommentLike(Long commentId, User user) {
 
         User foundUser = userRepository.findByUserId(user.getUserId()).orElseThrow(
@@ -85,6 +86,8 @@ public class LikeService {
 
         commentLikesRepository.save(CommentLikes);
 
+        foundComment.addLike();
+
         return ResponseEntity.status(200).body("좋아요 성공!");
     }
 
@@ -94,17 +97,13 @@ public class LikeService {
         CommentLikes foundLike = commentLikesRepository.findById(commentId).orElseThrow(
                 () -> new IllegalArgumentException("해당 좋아요가 존재하지 않습니다."));
 
+        Comment foundComment = commentRepository.findById(commentId).orElseThrow(
+                () -> new IllegalArgumentException("해당 댓글은 존재하지 않습니다."));
+
         commentLikesRepository.delete(foundLike);
+
+        foundComment.minusLike();
 
         return ResponseEntity.status(200).body("좋아요 취소 성공!");
     }
-
-//    public Long getLike(Recipe recipe) {
-//        return recipeLikesRepository.countByRecipe(recipe);
-//    }
-//
-//    public
-//    Long getLike(Comment comment) {
-//        return commentLikesRepository.countByComment(comment);
-//    }
 }
