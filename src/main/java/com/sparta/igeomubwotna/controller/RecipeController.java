@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.sparta.igeomubwotna.dto.RecipeRequestDto;
 import com.sparta.igeomubwotna.dto.RecipeResponseDto;
-import com.sparta.igeomubwotna.entity.Recipe;
 import com.sparta.igeomubwotna.security.UserDetailsImpl;
 import com.sparta.igeomubwotna.service.RecipeService;
 
@@ -67,4 +66,19 @@ public class RecipeController {
 		@AuthenticationPrincipal UserDetailsImpl userDetails) {
 		return ResponseEntity.status(HttpStatus.OK).body(recipeService.deleteRecipe(recipeId, userDetails.getUser()));
 	}
+
+	@GetMapping("/")
+	public ResponseEntity getAllRecipe(@RequestParam("page") int page,
+		@RequestParam(required = false, defaultValue="createdAt", value ="sortBy") String sortBy) {
+		return recipeService.getAllRecipe(page-1, sortBy);
+	}
+
+	// 기간별 검색 - api 중복 안 됨
+	@GetMapping("/date/")
+	public ResponseEntity getDateRecipe(@RequestParam("page") int page,
+		@RequestParam("startdate") String startDate,
+		@RequestParam("enddate") String endDate) {
+		return recipeService.getDateRecipe(page-1, startDate, endDate);
+	}
+
 }
