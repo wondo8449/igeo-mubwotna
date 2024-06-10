@@ -53,5 +53,4 @@ public class CommentController {
         Response response = new Response(HttpStatus.OK.value(), "댓글이 삭제되었습니다");
         return ResponseEntity.ok().body(response);
     }
-
 }
