@@ -31,8 +31,8 @@ public class LikeController {
         return likeService.addCommentLike(commentId, userDetails.getUser());
     }
 
-    @DeleteMapping("/comment/{commentId}")
-    public ResponseEntity removeCommentLike(@PathVariable Long commentId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return likeService.removeCommentLike(commentId, userDetails.getUser());
+    @DeleteMapping("/comment/{commentLikeId}")
+    public ResponseEntity removeCommentLike(@PathVariable Long commentLikeId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return likeService.removeCommentLike(commentLikeId, userDetails.getUser());
     }
 }
