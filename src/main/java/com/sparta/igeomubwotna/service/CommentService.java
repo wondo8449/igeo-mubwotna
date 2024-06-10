@@ -55,6 +55,7 @@ public class CommentService {
         return ResponseEntity.ok("comment가 수정되었습니다.");
     }
 
+    @Transactional
     /* Delete : 댓글 삭제 */
     public void deleteComment(Long recipeId, Long commentId, User user) {
         Recipe recipe = recipeService.findById(recipeId);
