@@ -58,7 +58,13 @@ public class Recipe extends Timestamped{
 	}
 
 	public void update(RecipeRequestDto requestDto) {
-		this.title = requestDto.getTitle();
-		this.content = requestDto.getContent();
+
+		if (requestDto.getTitle() != null) {
+			this.title = requestDto.getTitle();
+		}
+		if (requestDto.getContent() != null) {
+			this.content = requestDto.getContent();
+		}
+
 	}
 }
