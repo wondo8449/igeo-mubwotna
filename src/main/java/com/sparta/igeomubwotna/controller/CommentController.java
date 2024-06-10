@@ -25,7 +25,7 @@ public class CommentController {
     public ResponseEntity createComment(@RequestBody CommentRequestDto requestDto,
                                         @PathVariable Long recipeId,
                                         @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return commentService.createComment(requestDto, recipeId, userDetails.getUser().getId());
+        return commentService.createComment(requestDto, recipeId, userDetails.getUser());
     }
 
     /* Read */
