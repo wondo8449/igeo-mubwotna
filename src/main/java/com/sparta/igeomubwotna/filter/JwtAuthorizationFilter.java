@@ -44,7 +44,10 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
         // HTTP 요청에서 Access 토큰 추출
         String accessToken = jwtUtil.getAccessTokenFromHeader(req);
-        String userId = jwtUtil.getUserInfoFromToken(accessToken).getSubject();
+
+        // HTTP 요청에서 UserId 추출
+        String userId = jwtUtil.getUserIdFromHeader(req);
+
         // 유저 정보로 refreshToken 들고오기
         String refreshToken = userRepository.findByUserId(userId).get().getRefreshToken();
 
