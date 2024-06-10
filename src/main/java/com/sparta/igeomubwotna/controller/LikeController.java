@@ -9,27 +9,26 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/like")
 public class LikeController {
 
     private final LikeService likeService;
 
-    @PostMapping("/recipe/{recipeId}")
+    @PostMapping("/recipe/{recipeId}/like")
     public ResponseEntity addRecipeLike(@PathVariable Long recipeId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return likeService.addRecipeLike(recipeId, userDetails.getUser());
     }
 
-    @DeleteMapping("/recipe/{recipeLikeId}")
+    @DeleteMapping("/recipe/{recipeLikeId}/like")
     public ResponseEntity removeRecipeLike(@PathVariable Long recipeLikeId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return likeService.removeRecipeLike(recipeLikeId, userDetails.getUser());
     }
 
-    @PostMapping("/comment/{commentId}")
+    @PostMapping("/comment/{commentId}/like")
     public ResponseEntity addCommentLike(@PathVariable Long commentId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return likeService.addCommentLike(commentId, userDetails.getUser());
     }
 
-    @DeleteMapping("/comment/{commentLikeId}")
+    @DeleteMapping("/comment/{commentLikeId}/like")
     public ResponseEntity removeCommentLike(@PathVariable Long commentLikeId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return likeService.removeCommentLike(commentLikeId, userDetails.getUser());
     }
