@@ -34,6 +34,11 @@ public class UserController {
         return userService.updateUserProfile(requestDto, userDetails.getUser().getId());
     }
 
+    @PostMapping("/user/logout")
+    public ResponseEntity<Response> logout(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return userService.logout(userDetails.getUser().getId());
+    }
+
     @PatchMapping("/user/withdraw")
     public ResponseEntity<Response> withdrawUser(@RequestBody PasswordDto passwordDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         // 인증 객체에서 사용자 정보를 추출
