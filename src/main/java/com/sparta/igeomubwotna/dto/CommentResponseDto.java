@@ -22,13 +22,11 @@ public class CommentResponseDto {
         this.likeCount = likeCount;
     }
 
-
     public static CommentResponseDto toDto(Comment comment) {
         return new CommentResponseDto(
                 comment.getId(),
                 comment.getContent(),
                 comment.getUser().getUserId(),
-//                comment.getRecipe().get(),
                 comment.getCreatedAt(),
                 comment.getLikeCount()
                 );
