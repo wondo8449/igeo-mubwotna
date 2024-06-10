@@ -36,7 +36,17 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain filterChain) throws ServletException, IOException {
         String url = req.getRequestURI();
 
-        if(StringUtils.hasText(url) && (url.equals("/user/signin") || url.equals("/user/signup"))) {
+        // HTTP 요청에서 UserId 추출
+        String userId = jwtUtil.getUserIdFromHeader(req);
+
+        if (userRepository.findByUserId(userId).get().isWithdrawn()) {
+            res.setCharacterEncoding("UTF-8");
+            res.getWriter().write("이미 탈퇴한 회원입니다.");  // 탈퇴한 사용자는 로그인 못함
+
+            return;
+        }
+
+        if (StringUtils.hasText(url) && (url.equals("/user/signin") || url.equals("/user/signup"))) {
             filterChain.doFilter(req, res);
             return; // 필터 체인을 빠져나갑니다.
         }
@@ -44,15 +54,13 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         // HTTP 요청에서 Access 토큰 추출
         String accessToken = jwtUtil.getAccessTokenFromHeader(req);
 
-        // HTTP 요청에서 UserId 추출
-        String userId = jwtUtil.getUserIdFromHeader(req);
-
         // 유저 정보로 refreshToken 들고오기
         String refreshToken = userRepository.findByUserId(userId).get().getRefreshToken();
 
         if (refreshToken == null) {
             res.setCharacterEncoding("UTF-8");
-            res.getWriter().write("다시 로그인해주세요.");  //로그아웃하여 Refresh Token이 초기화되었으므로 재로그인 유도
+            res.getWriter().write("다시 로그인해주세요.");  // 로그아웃하여 Refresh Token이 초기화되었으므로 재로그인 유도
+
             return;
         }
 

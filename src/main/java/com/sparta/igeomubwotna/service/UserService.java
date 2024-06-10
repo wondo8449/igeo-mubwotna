@@ -148,12 +148,6 @@ public class UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 사용자를 찾을 수 없습니다."));
 
-        // 이미 탈퇴한 사용자인지 확인
-        if (user.isWithdrawn()) {
-            Response response = new Response(HttpStatus.BAD_REQUEST.value(), "이미 탈퇴한 사용자입니다.");
-            return ResponseEntity.badRequest().body(response);
-        }
-
         // 입력받은 비밀번호를 인코딩하여 기존 비밀번호와 비교
         if (!passwordEncoder.matches(passwordDto.getPassword(), user.getPassword())) {
             Response response = new Response(HttpStatus.BAD_REQUEST.value(), "비밀번호가 일치하지 않습니다.");
