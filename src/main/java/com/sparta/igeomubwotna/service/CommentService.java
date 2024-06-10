@@ -80,7 +80,7 @@ public class CommentService {
 
 
     /* ID로 comment 찾기 */
-    private Comment findById(Long commentId) {
+    public Comment findById(Long commentId) {
         return commentRepository.findById(commentId).orElseThrow(() ->
                 new IllegalArgumentException("해당 댓글이 존재하지 않습니다.")
         );
