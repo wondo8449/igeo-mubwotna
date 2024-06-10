@@ -33,10 +33,6 @@ public class LikeService {
 
         var RecipeLikes = new RecipeLikes(foundUser, foundRecipe);
 
-        Optional<RecipeLikes> list = recipeLikesRepository.findByUserAndRecipe(foundUser, foundRecipe);
-
-        System.out.println(list);
-
         if(recipeLikesRepository.findByUserAndRecipe(foundUser, foundRecipe).isPresent()) {
             throw new IllegalArgumentException("이미 좋아요를 누른 레시피입니다.");
         }
