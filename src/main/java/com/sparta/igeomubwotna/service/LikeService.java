@@ -87,14 +87,14 @@ public class LikeService {
     }
 
     @Transactional
-    public ResponseEntity removeCommentLike(Long commentId, User user) {
+    public ResponseEntity removeCommentLike(Long commentLikeId, User user) {
 
         User foundUser = userService.findById(user.getId());
 
-        CommentLikes foundLike = commentLikesRepository.findById(commentId).orElseThrow(
+        CommentLikes foundLike = commentLikesRepository.findById(commentLikeId).orElseThrow(
                 () -> new IllegalArgumentException("해당 좋아요가 존재하지 않습니다."));
 
-        Comment foundComment = commentService.findById(commentId);
+        Comment foundComment = commentService.findById(foundLike.getComment().getId());
 
         if (!(foundUser.getUserId().equals(foundComment.getUser().getUserId()))) {
             throw new IllegalArgumentException("다른 사람의 좋아요는 삭제할 수 없습니다.");
