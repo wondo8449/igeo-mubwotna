@@ -40,7 +40,7 @@ public class CommentController {
                                         @PathVariable Long commentId,
                                         @RequestBody CommentRequestDto requestDto,
                                         @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return ResponseEntity.ok().body(commentService.updateComment(recipeId, commentId, requestDto, userDetails.getUser()));
+        return (commentService.updateComment(recipeId, commentId, requestDto, userDetails.getUser()));
     }
 
     /* Delete */
