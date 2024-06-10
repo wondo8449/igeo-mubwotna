@@ -20,13 +20,60 @@
 ## 프로젝트 소개
 <details>
 <summary> 📑 요구사항 정의 </summary>
+<br>
 
-* Users : Id, userId, password, name, email, description, status, refresh_token, status_modified_at, create_at, modified_at
+|회원|타입|                                 
+|:---------:|:--------:|
+|Id|Long|
+|userId|String|
+|password|String|
+|name|String|
+|email|email|
+|description|String|
+|status|String|
+|refresh_token|String|
+|status_modified_at|String|
+|create_at|String|
+|modified_at|String|
+<br>
 
-* Recipe : id, user_id, content, like, created_at, modified_at
-* Comment : id, recipe_id, user_id, content, like, created_at, modified_at
-* RecipeLikes : id, user_id, recipe_id, created_at, modified_at
-* CommentLikes : id, user_id, comment_id, created_at, modified_at
+|레시피|타입|
+|:---------:|:--------:|
+|Id|Long|
+|userId|Long|
+|content|String|
+|like|Long|
+|create_at|String|
+|modified_at|String|
+<br>
+
+|댓글|타입|
+|:---------:|:--------:|
+|Id|Long|
+|recipe_id|Long|
+|user_id|Long|
+|content|String|
+|like|Long|
+|create_at|String|
+|modified_at|String|
+<br>
+
+|레시피 좋아요|타입|
+|:---------:|:--------:|
+|Id|Long|
+|recipe_id|Long|
+|user_id|Long|
+|create_at|String|
+|modified_at|String|
+<br>
+
+|레시피 좋아요|타입|
+|:---------:|:--------:|
+|Id|Long|
+|comment_id|Long|
+|user_id|Long|
+|create_at|String|
+|modified_at|String|
 
 <br>
 
@@ -157,7 +204,9 @@
 #### 🤡 이창형
 
 #### 🔨 김예찬
-
+지금까지 해보지 않았던 새로운 기능을 맡아서 개발해 볼 수 있어 좋은 경험이었습니다. 그리고 시작하기전 깃허브 룰을 상세하게
+정하고 시작하여서 프로젝트를 하는내내 깔끔하고 알아보기 쉽게 깃허브 관리가 가능하였고 서로 꼼꼼하게 코드리뷰를 해줌을 통해서
+미처 생각하지 못했던 부분도 팀원들과 함께 수정하며 잘 해내갈 수 있었습니다.
 #### 🌳 이은샘
 
 #### 👾 박시현
