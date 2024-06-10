@@ -73,7 +73,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         // 로그인시 RefreshToken을 user DB에 저장
         userRepository.findByUserId(userId).ifPresent(
                 user -> {
-                    user.updateDescription(refreshToken);
+                    user.updateRefreshToken(refreshToken);
                     userRepository.save(user);
                 }
         );
