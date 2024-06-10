@@ -1,3 +1,14 @@
+package com.sparta.igeomubwotna.service;
+
+import com.sparta.igeomubwotna.entity.*;
+import com.sparta.igeomubwotna.repository.*;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+@Service
+@RequiredArgsConstructor
 public class LikeService {
 
     private final RecipeLikesRepository recipeLikesRepository;
