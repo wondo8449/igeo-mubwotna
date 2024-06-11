@@ -72,6 +72,7 @@ public class SecurityConfig {
                 authorizeHttpRequests
                         .requestMatchers("/user/signup").permitAll() // 회원가입 요청 모두 접근 허가
                         .requestMatchers("/user/signin").permitAll() // 로그인 요청 모두 접근 허가
+                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**").permitAll()  // Swagger UI에 대한 접근 허용
                         .anyRequest().authenticated() // 그 외 모든 요청 인증처리
         );
 

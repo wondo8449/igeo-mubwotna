@@ -1,5 +1,6 @@
 package com.sparta.igeomubwotna.filter;
 
+import com.sparta.igeomubwotna.entity.User;
 import com.sparta.igeomubwotna.jwt.JwtUtil;
 import com.sparta.igeomubwotna.repository.UserRepository;
 import com.sparta.igeomubwotna.security.UserDetailsServiceImpl;
@@ -18,6 +19,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Optional;
 
 @Slf4j(topic = "JWT 검증 및 인가")
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
@@ -36,7 +38,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain filterChain) throws ServletException, IOException {
         String url = req.getRequestURI();
 
-        if (StringUtils.hasText(url) && (url.equals("/user/signin") || url.equals("/user/signup"))) {
+        if (StringUtils.hasText(url) && (url.equals("/user/signin") || url.equals("/user/signup") || url.startsWith("/swagger"))) {
             filterChain.doFilter(req, res);
             return; // 필터 체인을 빠져나갑니다.
         }
@@ -44,42 +46,47 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         // HTTP 요청에서 UserId 추출
         String userId = jwtUtil.getUserIdFromHeader(req);
 
-        if (userRepository.findByUserId(userId).get().isWithdrawn()) {
-            res.setCharacterEncoding("UTF-8");
-            res.getWriter().write("이미 탈퇴한 회원입니다.");  // 탈퇴한 사용자는 로그인 못함
+        Optional<User> userOptional = userRepository.findByUserId(userId);
 
-            return;
+        // 사용자가 존재하지 않는 경우 또는 사용자가 탈퇴한 경우 처리
+        if (userOptional.isEmpty() || userOptional.get().isWithdrawn()) {
+            if (url.startsWith("/api")) { // API 요청인 경우에만 응답을 보냄
+                res.setCharacterEncoding("UTF-8");
+                res.getWriter().write("이미 탈퇴한 회원이거나 존재하지 않는 회원입니다.");  // 탈퇴한 사용자 또는 존재하지 않는 사용자는 로그인 못함
+                return;
+            }
         }
 
         // HTTP 요청에서 Access 토큰 추출
         String accessToken = jwtUtil.getAccessTokenFromHeader(req);
 
-        // 유저 정보로 refreshToken 들고오기
-        String refreshToken = userRepository.findByUserId(userId).get().getRefreshToken();
+        if (userOptional.isPresent()) {
+            // 유저 정보로 refreshToken 들고오기
+            String refreshToken = userOptional.get().getRefreshToken();
 
-        if (refreshToken == null) {
-            res.setCharacterEncoding("UTF-8");
-            res.getWriter().write("다시 로그인해주세요.");  // 로그아웃하여 Refresh Token이 초기화되었으므로 재로그인 유도
-
-            return;
-        }
-
-        if (StringUtils.hasText(accessToken)) {
-            // Access 토큰 유효성 검증
-            if (!jwtUtil.validateAccessToken(accessToken, refreshToken, res)) {
-                // 유효하지 않은 토큰이면 에러 로깅 후 종료
+            if (refreshToken == null) {
+                res.setCharacterEncoding("UTF-8");
+                res.getWriter().write("다시 로그인해주세요.");  // 로그아웃하여 Refresh Token이 초기화되었으므로 재로그인 유도
                 return;
             }
-            // JWT 토큰으로부터 사용자 정보(Claims) 추출
-            Claims info = jwtUtil.getUserInfoFromToken(accessToken);
 
-            try {
-                // 사용자 인증 처리
-                setAuthentication(info.getSubject());
-            } catch (Exception e) {
-                // 인증 처리 중 예외 발생 시 에러 로깅 후 종료
-                log.error(e.getMessage());
-                return;
+            if (StringUtils.hasText(accessToken)) {
+                // Access 토큰 유효성 검증
+                if (!jwtUtil.validateAccessToken(accessToken, refreshToken, res)) {
+                    // 유효하지 않은 토큰이면 에러 로깅 후 종료
+                    return;
+                }
+                // JWT 토큰으로부터 사용자 정보(Claims) 추출
+                Claims info = jwtUtil.getUserInfoFromToken(accessToken);
+
+                try {
+                    // 사용자 인증 처리
+                    setAuthentication(info.getSubject());
+                } catch (Exception e) {
+                    // 인증 처리 중 예외 발생 시 에러 로깅 후 종료
+                    log.error(e.getMessage());
+                    return;
+                }
             }
         }
 
