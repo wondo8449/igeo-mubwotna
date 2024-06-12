@@ -12,4 +12,9 @@ public class RecipeRequestDto {
 
 	@NotBlank
 	private String content;
+
+	public RecipeRequestDto(String title, String content) {
+		this.title = title;
+		this.content = content;
+	}
 }
