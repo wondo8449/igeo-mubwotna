@@ -1,9 +1,11 @@
 package com.sparta.igeomubwotna.dto;
 
 import com.sparta.igeomubwotna.entity.User;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
+@AllArgsConstructor
 public class UserProfileDto {
     private String userId;
     private String name;
