@@ -13,22 +13,22 @@ public class LikeController {
 
     private final LikeService likeService;
 
-    @PostMapping("/api/recipe/{recipeId}/like")
+    @PostMapping("/recipe/{recipeId}/like")
     public ResponseEntity addRecipeLike(@PathVariable Long recipeId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return likeService.addRecipeLike(recipeId, userDetails.getUser());
     }
 
-    @DeleteMapping("/api/recipe/{recipeLikeId}/like")
+    @DeleteMapping("/recipe/{recipeLikeId}/like")
     public ResponseEntity removeRecipeLike(@PathVariable Long recipeLikeId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return likeService.removeRecipeLike(recipeLikeId, userDetails.getUser());
     }
 
-    @PostMapping("/api/comment/{commentId}/like")
+    @PostMapping("/comment/{commentId}/like")
     public ResponseEntity addCommentLike(@PathVariable Long commentId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return likeService.addCommentLike(commentId, userDetails.getUser());
     }
 
-    @DeleteMapping("/api/comment/{commentLikeId}/like")
+    @DeleteMapping("/comment/{commentLikeId}/like")
     public ResponseEntity removeCommentLike(@PathVariable Long commentLikeId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return likeService.removeCommentLike(commentLikeId, userDetails.getUser());
     }
