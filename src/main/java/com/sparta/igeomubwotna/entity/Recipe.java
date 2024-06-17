@@ -44,6 +44,14 @@ public class Recipe extends Timestamped {
         this.user = user;
     }
 
+    public Recipe(Long id, RecipeRequestDto requestDto, User user) {
+        this.id = id;
+        this.title = requestDto.getTitle();
+        this.content = requestDto.getContent();
+        this.recipeLikes = 0L;
+        this.user = user;
+    }
+
     public Recipe(User user, String title, String content) {
         this.title = title;
         this.content = content;
